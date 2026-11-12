@@ -1,0 +1,14 @@
+Seçilen parametreler: K=0.045 r=0.4 KL=0.005 KH=0.002  (eğitim 2014-2021 MSE/takım=115.84)
+
+Maç öncesi NORMAL SÜRE FARKI (ev - dep) için hata (RMSE, sayı):
+  doğrulama 2022  n= 1316  sabit=15.26  sadece spread=13.67  sadece güç puanı=14.15  ikisi=13.67
+  test 2023-2026  n= 5273  sabit=15.44  sadece spread=13.49  sadece güç puanı=14.02  ikisi=13.49
+  katsayılar (ikisi): sabit=0.004 spread=0.922 güç farkı=0.037
+  katsayılar (sadece spread): sabit=0.022 spread=0.952
+
+Maç öncesi NORMAL SÜRE TOPLAM SAYI için hata (RMSE, sayı):
+  doğrulama 2022  sabit (eğitim ort.)=21.27  [hile: o sezonun gerçek ortalaması=19.29]  güç puanı=17.78
+  test 2023-2026  sabit (eğitim ort.)=25.39  [hile: o sezonun gerçek ortalaması=19.37]  güç puanı=17.82
+  katsayılar: sabit=10.049 güç toplamı=0.954
+
+Doğrulamaya göre seçilen fark modeli: spread

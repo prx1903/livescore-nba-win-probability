@@ -1,0 +1,35 @@
+Simulated vs real games, test seasons 2023-2026, 5273 games (each real game simulated once)
+
+metric                                  real  simulated      difference [95% interval]
+resid_margin_mean                     0.0698     0.4616    +0.3918 [-0.1286, +0.9123]
+resid_total_mean                      0.5816    -0.7190    -1.3006 [-2.0059, -0.5953]
+ot                                    0.0516     0.0404    -0.0112 [-0.0192, -0.0032]
+home_win                              0.5572     0.5684    +0.0112 [-0.0077, +0.0301]
+tie_end                               0.0516     0.0404    -0.0112 [-0.0192, -0.0032]
+close_end                             0.1790     0.1578    -0.0212 [-0.0355, -0.0070]
+tie_24                                0.0360     0.0292    -0.0068 [-0.0136, -0.0000]
+close_24                              0.2207     0.1929    -0.0279 [-0.0433, -0.0124]
+q1_share                              0.2531     0.2537    +0.0006 [-0.0007, +0.0019]
+q2_share                              0.2514     0.2504    -0.0010 [-0.0023, +0.0002]
+q3_share                              0.2539     0.2535    -0.0004 [-0.0017, +0.0009]
+q4_share                              0.2415     0.2424    +0.0008 [-0.0005, +0.0022]
+lead_changes                          6.6052     6.6306    +0.0254 [-0.1912, +0.2420]
+largest_lead                         20.4051    20.6770    +0.2720 [-0.0523, +0.5962]
+longest_run                          11.5505    11.3778    -0.1728 [-0.2744, -0.0711]
+fta                                  44.1978    44.1312    -0.0666 [-0.4515, +0.3184]
+resid_margin_sd                      13.4861    13.7786    +0.2925
+resid_total_sd                       17.8092    19.1182    +1.3091
+beta                                 -0.4290    -0.4470    -0.0180
+slope_margin                          1.0624     1.1201    +0.0577
+sd_margin_12min                       8.5941     8.7323    +0.1383
+sd_margin_24min                      11.8232    12.1827    +0.3595
+sd_margin_36min                      14.3152    14.5203    +0.2051
+
+Home-win rate by expected margin mu_m (home - away):
+  mu_m in (-99,  -6]  n=  771  real 0.200  simulated 0.256
+  mu_m in ( -6,  -2]  n=  881  real 0.398  simulated 0.377
+  mu_m in ( -2,   2]  n=  728  real 0.499  simulated 0.493
+  mu_m in (  2,   6]  n= 1235  real 0.621  simulated 0.645
+  mu_m in (  6,  99]  n= 1658  real 0.786  simulated 0.791
+
+Feed checks on simulated events: 5273 games, 2034454 events, 0 rejected, 0 warnings

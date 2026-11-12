@@ -1,0 +1,87 @@
+=== 1) TEMPO VE GÜÇ GÜNCELLEMESİ (eğitim 2014-2021 ile seçim) ===
+Toplam sayı: güncellemesiz MSE=156.21  en iyi kappa=None  MSE=156.21
+Fark: güncellemesiz MSE=97.14  en iyi kappa=None  MSE=97.14
+  doğrulama 2022, toplam MSE: güncellemesiz=155.46  güncellemeli=155.46
+  doğrulama 2022, fark MSE: güncellemesiz=115.36  güncellemeli=115.36
+
+=== 2) MOMENTUM VE FAUL SIKINTISI (eğitimde kestirim, doğrulamada karar) ===
+Doğrulama Brier: lojistik (mevcut)=0.15707  dağılım modeli (fark erimesi ve beraberlik düzeltmesi yok)=0.16045
+Doğrulama Brier, fark erimesi eklendi (katsayı=-0.513): 0.15741
+momentum (son 5 dk fark değişimi)          katsayı=-0.015 [%95: -0.020, +0.000]  doğrulama fark MSE 110.719->110.727  Brier 0.15741->0.15745
+momentum (son 3 dk)                        katsayı=-0.016 [%95: -0.023, -0.002]  doğrulama fark MSE 110.719->110.725  Brier 0.15741->0.15744
+faul sıkıntısı (önem ağırlıklı)            katsayı=+0.172 [%95: -1.132, +1.541]  doğrulama fark MSE 110.719->110.715  Brier 0.15741->0.15741
+faulle oyundan çıkma (önem ağırlıklı)      katsayı=+3.853 [%95: +1.171, +7.006]  doğrulama fark MSE 110.719->110.716  Brier 0.15741->0.15741
+Doğrulamaya göre tutulanlar (Brier en az 0,0001 düşmeli): yok
+
+=== 3) SON MODEL (2014-2022 ile kestirildi) ===
+Uzatma: c=1.249 varyans=23.84 n=761 gözlenen uzatma beraberliği=0.142
+  model: tek uzatmada beraberlik=0.143 (yarı genişlik h=0.88)
+Normal süre sonu beraberlik yarı genişliği h (kalan dk grupları [0, 1, 2, 3, 5, 8, 12, 24, 48]): [0.9000000000000004, 0.9600000000000004, 0.9800000000000004, 0.9800000000000004, 1.0000000000000004, 1.0000000000000004, 1.0000000000000004, 0.9800000000000004]
+Fark erimesi katsayısı (mevcut fark x kalan pay): {'ms': -0.5049001534624338}
+Periyot fark varyansları (sd): [np.float64(8.13), np.float64(7.97), np.float64(8.46), np.float64(7.98)]
+Kalan süre belirsizliği sd (fark): 48dk=13.32 24dk=10.47 12dk=7.71 2dk=3.62
+  (toplam):                  48dk=18.09 24dk=12.54 12dk=8.90
+  fark ortalamasında en büyük sapma (eğitim, dakika bazında): 0.20 sayı
+
+=== 4) TEST 2023-2026: KAZANMA OLASILIĞI (aynı anlık görüntüler) ===
+Lojistik, teslim edilen (zamanı kaymış veriyle eğitilmiş): Brier=0.1519 log loss=0.4557  n=254328
+Lojistik, düzeltilmiş veriyle yeniden eğitildi:           Brier=0.1519 log loss=0.4557
+  yeni katsayılar: sabit=0.0016 [4.7089, -0.0745, -0.0907, 0.227]
+Yeni model (skor dağılımı):                             Brier=0.1521 log loss=0.4561
+Fark (yeni - teslim edilen lojistik), maç kümeli bootstrap: +0.0002 [%95: -0.0005, +0.0009]
+Fark (yeni - düzeltilmiş lojistik): +0.0002 [%95: -0.0005, +0.0009]
+Fark (düzeltilmiş - teslim edilen lojistik): +0.0000 [%95: -0.0000, +0.0000]
+  36-48 dk  n= 63257 teslim edilen=0.1981 düzeltilmiş=0.1981 yeni=0.1977
+  24-36 dk  n= 63276 teslim edilen=0.1746 düzeltilmiş=0.1746 yeni=0.1748
+  12-24 dk  n= 63276 teslim edilen=0.1437 düzeltilmiş=0.1437 yeni=0.1442
+  5-12 dk   n= 36911 teslim edilen=0.1064 düzeltilmiş=0.1064 yeni=0.1070
+  Son 5 dk  n= 26365 teslim edilen=0.0685 düzeltilmiş=0.0685 yeni=0.0688
+  Uzatma    n=  1243 teslim edilen=0.1793 düzeltilmiş=0.1793 yeni=0.1786
+Kalibrasyon (yeni model, 10 bölme): 
+                   n  tahmin  gercek
+b                                   
+(-0.001, 0.1]  26665   0.030   0.031
+(0.1, 0.2]     16389   0.151   0.153
+(0.2, 0.3]     19313   0.251   0.250
+(0.3, 0.4]     21292   0.351   0.348
+(0.4, 0.5]     22683   0.450   0.455
+(0.5, 0.6]     24888   0.552   0.555
+(0.6, 0.7]     27610   0.651   0.665
+(0.7, 0.8]     27624   0.750   0.761
+(0.8, 0.9]     25877   0.849   0.848
+(0.9, 1.0]     41987   0.969   0.970
+
+=== 5) TEST: UZATMAYA GİTME OLASILIĞI (normal süre anları) ===
+Sabit oran (0.0570): Brier=0.04895   Model: Brier=0.04794
+  36-48 dk  sabit=0.04897 model=0.04877  ort. tahmin=0.0515 gerçek=0.0516
+  24-36 dk  sabit=0.04895 model=0.04853  ort. tahmin=0.0521 gerçek=0.0516
+  12-24 dk  sabit=0.04895 model=0.04810  ort. tahmin=0.0524 gerçek=0.0516
+  5-12 dk   sabit=0.04895 model=0.04728  ort. tahmin=0.0513 gerçek=0.0516
+  Son 5 dk  sabit=0.04895 model=0.04501  ort. tahmin=0.0516 gerçek=0.0516
+                     n  tahmin  gercek
+b                                     
+(-0.001, 0.02]   44100  0.0058  0.0055
+(0.02, 0.05]     62008  0.0377  0.0355
+(0.05, 0.1]     132899  0.0650  0.0667
+(0.1, 0.2]       13078  0.1268  0.1174
+(0.2, 0.4]        1000  0.2312  0.2180
+
+=== 6) TEST: SKOR TAHMİNİ (normal süre sonu) ===
+  Maç öncesi      n= 5255  toplam MAE: model=14.20 (bilgisiz=19.87)  fark MAE=10.48  %80 aralık kapsaması: fark=0.806 toplam=0.805
+  1. çeyrek sonu  n= 5273  toplam MAE: model=12.21 (bilgisiz=15.94)  fark MAE= 9.54  %80 aralık kapsaması: fark=0.812 toplam=0.804
+  Devre arası     n= 5273  toplam MAE: model=10.11 (bilgisiz=12.33)  fark MAE= 8.32  %80 aralık kapsaması: fark=0.805 toplam=0.796
+  3. çeyrek sonu  n= 5273  toplam MAE: model= 7.02 (bilgisiz= 7.56)  fark MAE= 6.08  %80 aralık kapsaması: fark=0.806 toplam=0.800
+  Son 6 dk        n= 5273  toplam MAE: model= 5.31 (bilgisiz= 5.28)  fark MAE= 4.57  %80 aralık kapsaması: fark=0.813 toplam=0.788
+
+=== 7) TEST: PERİYOT SONUÇLARI (ev kazanır / berabere / dep kazanır) ===
+  1. periyot, maç öncesi         n= 5255  3 sınıf Brier: sabit oran=0.5404 model=0.5177  (berabere tahmini ort=0.048, gerçek=0.046)
+  1. periyot, periyot ortasında  n= 5273  3 sınıf Brier: sabit oran=0.5404 model=0.3769  (berabere tahmini ort=0.046, gerçek=0.046)
+  2. periyot, maç öncesi         n= 5255  3 sınıf Brier: sabit oran=0.5417 model=0.5233  (berabere tahmini ort=0.049, gerçek=0.044)
+  2. periyot, periyot başında    n= 5273  3 sınıf Brier: sabit oran=0.5418 model=0.5205  (berabere tahmini ort=0.049, gerçek=0.044)
+  2. periyot, periyot ortasında  n= 5273  3 sınıf Brier: sabit oran=0.5418 model=0.3768  (berabere tahmini ort=0.048, gerçek=0.044)
+  3. periyot, maç öncesi         n= 5255  3 sınıf Brier: sabit oran=0.5433 model=0.5266  (berabere tahmini ort=0.046, gerçek=0.049)
+  3. periyot, periyot başında    n= 5273  3 sınıf Brier: sabit oran=0.5431 model=0.5226  (berabere tahmini ort=0.046, gerçek=0.049)
+  3. periyot, periyot ortasında  n= 5273  3 sınıf Brier: sabit oran=0.5431 model=0.3734  (berabere tahmini ort=0.046, gerçek=0.049)
+  4. periyot, maç öncesi         n= 5255  3 sınıf Brier: sabit oran=0.5488 model=0.5409  (berabere tahmini ort=0.049, gerçek=0.053)
+  4. periyot, periyot başında    n= 5273  3 sınıf Brier: sabit oran=0.5489 model=0.5240  (berabere tahmini ort=0.049, gerçek=0.053)
+  4. periyot, periyot ortasında  n= 5273  3 sınıf Brier: sabit oran=0.5489 model=0.3878  (berabere tahmini ort=0.047, gerçek=0.053)

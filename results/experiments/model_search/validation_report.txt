@@ -1,0 +1,198 @@
+=== (a) BASELINE LOJISTIK (kontrol) ===
+  a_logit_base                       val 2020  brier=0.15978  logloss=0.4781  ece=0.0233  maxgap=+0.045  (1 sn)
+  a_logit_base                       val 2021  brier=0.15605  logloss=0.4666  ece=0.0113  maxgap=+0.037  (1 sn)
+  a_logit_base                       val 2022  brier=0.15720  logloss=0.4702  ece=0.0226  maxgap=+0.048  (1 sn)
+  a_logit_base                       ORTALAMA brier=0.15768 logloss=0.4716 ece=0.0191
+
+=== (b) GRADIENT BOOSTING, HAM GIRDILER (m, tl, is_ot, spread) ===
+  b_hgb(lr=0.05,leaf=31)             val 2020  brier=0.16094  logloss=0.4887  ece=0.0242  maxgap=+0.043  (5 sn)
+  b_hgb(lr=0.05,leaf=31)             val 2021  brier=0.15614  logloss=0.4673  ece=0.0102  maxgap=+0.045  (5 sn)
+  b_hgb(lr=0.05,leaf=31)             val 2022  brier=0.15819  logloss=0.4745  ece=0.0234  maxgap=+0.063  (6 sn)
+  b_hgb(lr=0.05,leaf=31)             ORTALAMA brier=0.15843 logloss=0.4768 ece=0.0193
+  b_hgb(lr=0.05,leaf=63)             val 2020  brier=0.16116  logloss=0.4917  ece=0.0256  maxgap=+0.045  (6 sn)
+  b_hgb(lr=0.05,leaf=63)             val 2021  brier=0.15630  logloss=0.4684  ece=0.0104  maxgap=+0.046  (7 sn)
+  b_hgb(lr=0.05,leaf=63)             val 2022  brier=0.15841  logloss=0.4757  ece=0.0240  maxgap=+0.059  (7 sn)
+  b_hgb(lr=0.05,leaf=63)             ORTALAMA brier=0.15862 logloss=0.4786 ece=0.0200
+  b_hgb(lr=0.1,leaf=31)              val 2020  brier=0.16128  logloss=0.4921  ece=0.0255  maxgap=+0.041  (4 sn)
+  b_hgb(lr=0.1,leaf=31)              val 2021  brier=0.15620  logloss=0.4683  ece=0.0110  maxgap=+0.047  (4 sn)
+  b_hgb(lr=0.1,leaf=31)              val 2022  brier=0.15843  logloss=0.4759  ece=0.0242  maxgap=+0.064  (5 sn)
+  b_hgb(lr=0.1,leaf=31)              ORTALAMA brier=0.15864 logloss=0.4788 ece=0.0202
+  b_hgb(lr=0.1,leaf=63)              val 2020  brier=0.16167  logloss=0.4964  ece=0.0270  maxgap=+0.042  (5 sn)
+  b_hgb(lr=0.1,leaf=63)              val 2021  brier=0.15661  logloss=0.4702  ece=0.0113  maxgap=+0.040  (5 sn)
+  b_hgb(lr=0.1,leaf=63)              val 2022  brier=0.15879  logloss=0.4782  ece=0.0242  maxgap=+0.060  (6 sn)
+  b_hgb(lr=0.1,leaf=63)              ORTALAMA brier=0.15902 logloss=0.4816 ece=0.0208
+  b_hgb_mono(lr=0.05,leaf=31)        val 2020  brier=0.16054  logloss=0.4856  ece=0.0282  maxgap=+0.046  (5 sn)
+  b_hgb_mono(lr=0.05,leaf=31)        val 2021  brier=0.15678  logloss=0.4695  ece=0.0191  maxgap=+0.050  (5 sn)
+  b_hgb_mono(lr=0.05,leaf=31)        val 2022  brier=0.15825  logloss=0.4740  ece=0.0259  maxgap=+0.066  (6 sn)
+  b_hgb_mono(lr=0.05,leaf=31)        ORTALAMA brier=0.15852 logloss=0.4764 ece=0.0244
+  b_hgb_mono(lr=0.05,leaf=63)        val 2020  brier=0.16058  logloss=0.4859  ece=0.0285  maxgap=+0.047  (7 sn)
+  b_hgb_mono(lr=0.05,leaf=63)        val 2021  brier=0.15684  logloss=0.4697  ece=0.0202  maxgap=+0.052  (7 sn)
+  b_hgb_mono(lr=0.05,leaf=63)        val 2022  brier=0.15833  logloss=0.4743  ece=0.0260  maxgap=+0.066  (8 sn)
+  b_hgb_mono(lr=0.05,leaf=63)        ORTALAMA brier=0.15858 logloss=0.4766 ece=0.0249
+  b_hgb_mono(lr=0.1,leaf=31)         val 2020  brier=0.16053  logloss=0.4874  ece=0.0286  maxgap=+0.043  (4 sn)
+  b_hgb_mono(lr=0.1,leaf=31)         val 2021  brier=0.15686  logloss=0.4697  ece=0.0201  maxgap=+0.050  (5 sn)
+  b_hgb_mono(lr=0.1,leaf=31)         val 2022  brier=0.15833  logloss=0.4743  ece=0.0274  maxgap=+0.068  (6 sn)
+  b_hgb_mono(lr=0.1,leaf=31)         ORTALAMA brier=0.15857 logloss=0.4772 ece=0.0254
+  b_hgb_mono(lr=0.1,leaf=63)         val 2020  brier=0.16059  logloss=0.4876  ece=0.0293  maxgap=+0.043  (5 sn)
+  b_hgb_mono(lr=0.1,leaf=63)         val 2021  brier=0.15689  logloss=0.4700  ece=0.0205  maxgap=+0.052  (6 sn)
+  b_hgb_mono(lr=0.1,leaf=63)         val 2022  brier=0.15835  logloss=0.4744  ece=0.0270  maxgap=+0.065  (7 sn)
+  b_hgb_mono(lr=0.1,leaf=63)         ORTALAMA brier=0.15861 logloss=0.4774 ece=0.0256
+  b_lgbm(leaf=31)                    val 2020  brier=0.16106  logloss=0.4879  ece=0.0243  maxgap=+0.041  (5 sn)
+  b_lgbm(leaf=31)                    val 2021  brier=0.15618  logloss=0.4676  ece=0.0101  maxgap=+0.047  (7 sn)
+  b_lgbm(leaf=31)                    val 2022  brier=0.15831  logloss=0.4747  ece=0.0241  maxgap=+0.064  (6 sn)
+  b_lgbm(leaf=31)                    ORTALAMA brier=0.15852 logloss=0.4767 ece=0.0195
+  b_lgbm_mono(leaf=31)               val 2020  brier=0.16013  logloss=0.4822  ece=0.0251  maxgap=+0.044  (6 sn)
+  b_lgbm_mono(leaf=31)               val 2021  brier=0.15655  logloss=0.4683  ece=0.0148  maxgap=+0.045  (7 sn)
+  b_lgbm_mono(leaf=31)               val 2022  brier=0.15806  logloss=0.4729  ece=0.0235  maxgap=+0.061  (7 sn)
+  b_lgbm_mono(leaf=31)               ORTALAMA brier=0.15824 logloss=0.4745 ece=0.0211
+  b_lgbm(leaf=63)                    val 2020  brier=0.16123  logloss=0.4902  ece=0.0261  maxgap=+0.043  (6 sn)
+  b_lgbm(leaf=63)                    val 2021  brier=0.15638  logloss=0.4689  ece=0.0108  maxgap=+0.046  (7 sn)
+  b_lgbm(leaf=63)                    val 2022  brier=0.15870  logloss=0.4768  ece=0.0245  maxgap=+0.060  (7 sn)
+  b_lgbm(leaf=63)                    ORTALAMA brier=0.15877 logloss=0.4786 ece=0.0205
+  b_lgbm_mono(leaf=63)               val 2020  brier=0.16012  logloss=0.4823  ece=0.0257  maxgap=+0.045  (7 sn)
+  b_lgbm_mono(leaf=63)               val 2021  brier=0.15663  logloss=0.4686  ece=0.0144  maxgap=+0.045  (8 sn)
+  b_lgbm_mono(leaf=63)               val 2022  brier=0.15803  logloss=0.4728  ece=0.0238  maxgap=+0.062  (9 sn)
+  b_lgbm_mono(leaf=63)               ORTALAMA brier=0.15826 logloss=0.4746 ece=0.0213
+
+=== (b2) GRADIENT BOOSTING, MUHENDISLIK OZELLIKLERIYLE ===
+  b2_hgb_eng(lr=0.05,leaf=31)        val 2020  brier=0.16003  logloss=0.4813  ece=0.0225  maxgap=+0.041  (5 sn)
+  b2_hgb_eng(lr=0.05,leaf=31)        val 2021  brier=0.15610  logloss=0.4675  ece=0.0101  maxgap=+0.041  (5 sn)
+  b2_hgb_eng(lr=0.05,leaf=31)        val 2022  brier=0.15744  logloss=0.4720  ece=0.0225  maxgap=+0.053  (6 sn)
+  b2_hgb_eng(lr=0.05,leaf=31)        ORTALAMA brier=0.15786 logloss=0.4736 ece=0.0183
+  b2_hgb_eng_mono(lr=0.05,leaf=31)   val 2020  brier=0.15991  logloss=0.4804  ece=0.0243  maxgap=+0.044  (5 sn)
+  b2_hgb_eng_mono(lr=0.05,leaf=31)   val 2021  brier=0.15607  logloss=0.4672  ece=0.0112  maxgap=+0.049  (6 sn)
+  b2_hgb_eng_mono(lr=0.05,leaf=31)   val 2022  brier=0.15771  logloss=0.4722  ece=0.0229  maxgap=+0.058  (7 sn)
+  b2_hgb_eng_mono(lr=0.05,leaf=31)   ORTALAMA brier=0.15790 logloss=0.4733 ece=0.0194
+  b2_hgb_eng(lr=0.05,leaf=63)        val 2020  brier=0.16017  logloss=0.4823  ece=0.0229  maxgap=+0.046  (6 sn)
+  b2_hgb_eng(lr=0.05,leaf=63)        val 2021  brier=0.15629  logloss=0.4684  ece=0.0102  maxgap=+0.042  (7 sn)
+  b2_hgb_eng(lr=0.05,leaf=63)        val 2022  brier=0.15761  logloss=0.4729  ece=0.0224  maxgap=+0.052  (7 sn)
+  b2_hgb_eng(lr=0.05,leaf=63)        ORTALAMA brier=0.15802 logloss=0.4745 ece=0.0185
+  b2_hgb_eng_mono(lr=0.05,leaf=63)   val 2020  brier=0.16010  logloss=0.4813  ece=0.0255  maxgap=+0.045  (7 sn)
+  b2_hgb_eng_mono(lr=0.05,leaf=63)   val 2021  brier=0.15614  logloss=0.4675  ece=0.0128  maxgap=+0.049  (8 sn)
+  b2_hgb_eng_mono(lr=0.05,leaf=63)   val 2022  brier=0.15790  logloss=0.4728  ece=0.0239  maxgap=+0.059  (8 sn)
+  b2_hgb_eng_mono(lr=0.05,leaf=63)   ORTALAMA brier=0.15805 logloss=0.4739 ece=0.0207
+
+=== (g) KAYAN EGITIM PENCERESI (sezon kaymasi icin) ===
+  g_logit_base_win4                  val 2020  brier=0.15978  logloss=0.4779  ece=0.0226  maxgap=+0.052  (0 sn)
+  g_logit_base_win4                  val 2021  brier=0.15578  logloss=0.4659  ece=0.0057  maxgap=+0.022  (0 sn)
+  g_logit_base_win4                  val 2022  brier=0.15713  logloss=0.4697  ece=0.0219  maxgap=+0.043  (0 sn)
+  g_logit_base_win4                  ORTALAMA brier=0.15757 logloss=0.4712 ece=0.0167
+  g_logit_base_win6                  val 2020  brier=0.15968  logloss=0.4778  ece=0.0214  maxgap=+0.041  (1 sn)
+  g_logit_base_win6                  val 2021  brier=0.15591  logloss=0.4662  ece=0.0084  maxgap=+0.032  (0 sn)
+  g_logit_base_win6                  val 2022  brier=0.15715  logloss=0.4698  ece=0.0216  maxgap=+0.044  (1 sn)
+  g_logit_base_win6                  ORTALAMA brier=0.15758 logloss=0.4713 ece=0.0171
+
+=== (c) LOJISTIK + SPLINE/ETKILESIM ===
+  c_spline(C=0.1,knots=6)            val 2020  brier=0.15964  logloss=0.4779  ece=0.0220  maxgap=+0.047  (4 sn)
+  c_spline(C=0.1,knots=6)            val 2021  brier=0.15602  logloss=0.4663  ece=0.0109  maxgap=+0.040  (4 sn)
+  c_spline(C=0.1,knots=6)            val 2022  brier=0.15721  logloss=0.4701  ece=0.0220  maxgap=+0.047  (5 sn)
+  c_spline(C=0.1,knots=6)            ORTALAMA brier=0.15763 logloss=0.4714 ece=0.0183
+  c_spline(C=1.0,knots=6)            val 2020  brier=0.15965  logloss=0.4779  ece=0.0220  maxgap=+0.047  (4 sn)
+  c_spline(C=1.0,knots=6)            val 2021  brier=0.15602  logloss=0.4663  ece=0.0109  maxgap=+0.040  (4 sn)
+  c_spline(C=1.0,knots=6)            val 2022  brier=0.15721  logloss=0.4701  ece=0.0220  maxgap=+0.047  (6 sn)
+  c_spline(C=1.0,knots=6)            ORTALAMA brier=0.15763 logloss=0.4714 ece=0.0183
+  c_spline(C=10.0,knots=6)           val 2020  brier=0.15965  logloss=0.4779  ece=0.0220  maxgap=+0.047  (4 sn)
+  c_spline(C=10.0,knots=6)           val 2021  brier=0.15602  logloss=0.4663  ece=0.0109  maxgap=+0.040  (5 sn)
+  c_spline(C=10.0,knots=6)           val 2022  brier=0.15721  logloss=0.4701  ece=0.0221  maxgap=+0.047  (5 sn)
+  c_spline(C=10.0,knots=6)           ORTALAMA brier=0.15763 logloss=0.4714 ece=0.0183
+
+Aile kazananlari: gradient boosting -> b_lgbm_mono(leaf=31) (0.15824), spline -> c_spline(C=0.1,knots=6) (0.15763)
+
+=== (d) TAKIM GUCU PUANI OZELLIKLERIYLE GRADIENT BOOSTING ===
+  d_hgb_rating(lr=0.05,leaf=31)      val 2020  brier=0.17130  logloss=0.5163  ece=0.0374  maxgap=+0.065  (7 sn)
+  d_hgb_rating(lr=0.05,leaf=31)      val 2021  brier=0.16360  logloss=0.4892  ece=0.0202  maxgap=+0.052  (7 sn)
+  d_hgb_rating(lr=0.05,leaf=31)      val 2022  brier=0.16477  logloss=0.4933  ece=0.0309  maxgap=+0.063  (8 sn)
+  d_hgb_rating(lr=0.05,leaf=31)      ORTALAMA brier=0.16656 logloss=0.4996 ece=0.0295
+
+=== (e) KALIBRASYON DUZELTMESI (taban model son egitim sezonu haric egitilir) ===
+  e_cal_isotonic(b_lgbm_mono(leaf=31)) val 2020  brier=0.16094  logloss=0.4836  ece=0.0264  maxgap=+0.077  (7 sn)
+  e_cal_isotonic(b_lgbm_mono(leaf=31)) val 2021  brier=0.15688  logloss=0.4690  ece=0.0209  maxgap=+0.055  (7 sn)
+  e_cal_isotonic(b_lgbm_mono(leaf=31)) val 2022  brier=0.15836  logloss=0.4739  ece=0.0234  maxgap=+0.050  (8 sn)
+  e_cal_isotonic(b_lgbm_mono(leaf=31)) ORTALAMA brier=0.15873 logloss=0.4755 ece=0.0236
+  e_cal_platt(b_lgbm_mono(leaf=31))  val 2020  brier=0.16076  logloss=0.4845  ece=0.0243  maxgap=+0.059  (6 sn)
+  e_cal_platt(b_lgbm_mono(leaf=31))  val 2021  brier=0.15676  logloss=0.4684  ece=0.0204  maxgap=+0.032  (7 sn)
+  e_cal_platt(b_lgbm_mono(leaf=31))  val 2022  brier=0.15823  logloss=0.4723  ece=0.0239  maxgap=+0.049  (7 sn)
+  e_cal_platt(b_lgbm_mono(leaf=31))  ORTALAMA brier=0.15858 logloss=0.4751 ece=0.0229
+  e_cal_isotonic(c_spline(C=0.1,knots=6)) val 2020  brier=0.16014  logloss=0.4805  ece=0.0254  maxgap=+0.065  (3 sn)
+  e_cal_isotonic(c_spline(C=0.1,knots=6)) val 2021  brier=0.15650  logloss=0.4675  ece=0.0195  maxgap=+0.049  (3 sn)
+  e_cal_isotonic(c_spline(C=0.1,knots=6)) val 2022  brier=0.15737  logloss=0.4703  ece=0.0236  maxgap=+0.043  (5 sn)
+  e_cal_isotonic(c_spline(C=0.1,knots=6)) ORTALAMA brier=0.15801 logloss=0.4728 ece=0.0229
+  e_cal_platt(c_spline(C=0.1,knots=6)) val 2020  brier=0.15989  logloss=0.4781  ece=0.0245  maxgap=+0.065  (3 sn)
+  e_cal_platt(c_spline(C=0.1,knots=6)) val 2021  brier=0.15625  logloss=0.4670  ece=0.0193  maxgap=+0.030  (4 sn)
+  e_cal_platt(c_spline(C=0.1,knots=6)) val 2022  brier=0.15727  logloss=0.4700  ece=0.0241  maxgap=+0.050  (5 sn)
+  e_cal_platt(c_spline(C=0.1,knots=6)) ORTALAMA brier=0.15780 logloss=0.4717 ece=0.0226
+
+=== (f) TOPLULUK: lojistik + gradient boosting ortalamasi ===
+  f_ens_logit_gbm                    val 2020  brier=0.15972  logloss=0.4784  ece=0.0240  maxgap=+0.044  (7 sn)
+  f_ens_logit_gbm                    val 2021  brier=0.15608  logloss=0.4667  ece=0.0123  maxgap=+0.045  (8 sn)
+  f_ens_logit_gbm                    val 2022  brier=0.15742  logloss=0.4707  ece=0.0227  maxgap=+0.054  (9 sn)
+  f_ens_logit_gbm                    ORTALAMA brier=0.15774 logloss=0.4719 ece=0.0197
+  f_ens_logit_spline_gbm             val 2020  brier=0.15961  logloss=0.4779  ece=0.0232  maxgap=+0.042  (12 sn)
+  f_ens_logit_spline_gbm             val 2021  brier=0.15598  logloss=0.4663  ece=0.0113  maxgap=+0.042  (12 sn)
+  f_ens_logit_spline_gbm             val 2022  brier=0.15727  logloss=0.4703  ece=0.0226  maxgap=+0.052  (14 sn)
+  f_ens_logit_spline_gbm             ORTALAMA brier=0.15762 logloss=0.4715 ece=0.0190
+
+=== UC DOGRULAMA SEZONUNUN ORTALAMASI (secim olcutu: mean_brier) ===
+                                  model  mean_brier  mean_logloss  mean_ece
+                      g_logit_base_win4     0.15757       0.47118   0.01674
+                      g_logit_base_win6     0.15758       0.47127   0.01714
+                 f_ens_logit_spline_gbm     0.15762       0.47149   0.01903
+                c_spline(C=0.1,knots=6)     0.15763       0.47142   0.01832
+                c_spline(C=1.0,knots=6)     0.15763       0.47143   0.01835
+               c_spline(C=10.0,knots=6)     0.15763       0.47143   0.01834
+                           a_logit_base     0.15768       0.47163   0.01907
+                        f_ens_logit_gbm     0.15774       0.47193   0.01967
+   e_cal_platt(c_spline(C=0.1,knots=6))     0.15780       0.47170   0.02265
+            b2_hgb_eng(lr=0.05,leaf=31)     0.15786       0.47358   0.01833
+       b2_hgb_eng_mono(lr=0.05,leaf=31)     0.15790       0.47327   0.01943
+e_cal_isotonic(c_spline(C=0.1,knots=6))     0.15801       0.47276   0.02286
+            b2_hgb_eng(lr=0.05,leaf=63)     0.15802       0.47451   0.01849
+       b2_hgb_eng_mono(lr=0.05,leaf=63)     0.15805       0.47387   0.02073
+                   b_lgbm_mono(leaf=31)     0.15824       0.47446   0.02112
+                   b_lgbm_mono(leaf=63)     0.15826       0.47457   0.02129
+                 b_hgb(lr=0.05,leaf=31)     0.15843       0.47683   0.01925
+                        b_lgbm(leaf=31)     0.15852       0.47674   0.01952
+            b_hgb_mono(lr=0.05,leaf=31)     0.15852       0.47637   0.02442
+             b_hgb_mono(lr=0.1,leaf=31)     0.15857       0.47715   0.02536
+            b_hgb_mono(lr=0.05,leaf=63)     0.15858       0.47663   0.02489
+      e_cal_platt(b_lgbm_mono(leaf=31))     0.15858       0.47506   0.02287
+             b_hgb_mono(lr=0.1,leaf=63)     0.15861       0.47735   0.02560
+                 b_hgb(lr=0.05,leaf=63)     0.15862       0.47862   0.02001
+                  b_hgb(lr=0.1,leaf=31)     0.15864       0.47877   0.02024
+   e_cal_isotonic(b_lgbm_mono(leaf=31))     0.15873       0.47553   0.02358
+                        b_lgbm(leaf=63)     0.15877       0.47862   0.02045
+                  b_hgb(lr=0.1,leaf=63)     0.15902       0.48161   0.02081
+          d_hgb_rating(lr=0.05,leaf=31)     0.16656       0.49961   0.02950
+
+Baseline ortalama Brier = 0.15768
+Adaylarin baseline'a gore farki (eksi = daha iyi):
+  g_logit_base_win4                  -0.00011
+  g_logit_base_win6                  -0.00010
+  f_ens_logit_spline_gbm             -0.00006
+  c_spline(C=0.1,knots=6)            -0.00005
+  c_spline(C=1.0,knots=6)            -0.00005
+  c_spline(C=10.0,knots=6)           -0.00005
+  f_ens_logit_gbm                    +0.00006
+  e_cal_platt(c_spline(C=0.1,knots=6)) +0.00013
+  b2_hgb_eng(lr=0.05,leaf=31)        +0.00018
+  b2_hgb_eng_mono(lr=0.05,leaf=31)   +0.00022
+  e_cal_isotonic(c_spline(C=0.1,knots=6)) +0.00033
+  b2_hgb_eng(lr=0.05,leaf=63)        +0.00035
+  b2_hgb_eng_mono(lr=0.05,leaf=63)   +0.00037
+  b_lgbm_mono(leaf=31)               +0.00057
+  b_lgbm_mono(leaf=63)               +0.00059
+  b_hgb(lr=0.05,leaf=31)             +0.00075
+  b_lgbm(leaf=31)                    +0.00084
+  b_hgb_mono(lr=0.05,leaf=31)        +0.00085
+  b_hgb_mono(lr=0.1,leaf=31)         +0.00090
+  b_hgb_mono(lr=0.05,leaf=63)        +0.00090
+  e_cal_platt(b_lgbm_mono(leaf=31))  +0.00091
+  b_hgb_mono(lr=0.1,leaf=63)         +0.00093
+  b_hgb(lr=0.05,leaf=63)             +0.00095
+  b_hgb(lr=0.1,leaf=31)              +0.00096
+  e_cal_isotonic(b_lgbm_mono(leaf=31)) +0.00105
+  b_lgbm(leaf=63)                    +0.00109
+  b_hgb(lr=0.1,leaf=63)              +0.00134
+  d_hgb_rating(lr=0.05,leaf=31)      +0.00888
+
+Dogrulamada en iyi aday: g_logit_base_win4

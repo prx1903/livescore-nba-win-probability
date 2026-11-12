@@ -1,0 +1,36 @@
+== DOĞRULAMA (eğitim 2013-2021, doğrulama dosya yılı 2022) ==
+pregame_only(spread)       logloss=0.6071 brier=0.2098
+S1 skor+süre               logloss=0.5073 brier=0.1733
+S2 S1+spread*tl            logloss=0.4716 brier=0.1579
+S3 S2+spread*sqrt(tl)      logloss=0.4702 brier=0.1572
+Seçilen özellik kümesi (doğrulama Brier): S3 S2+spread*sqrt(tl)
+
+== TEST (eğitim 2013-2022, test dosya yılı 2023-2026) ==
+pregame_only(spread)       logloss=0.5943 brier=0.2045
+S1 skor+süre               logloss=0.4991 brier=0.1700
+S2 S1+spread*tl            logloss=0.4580 brier=0.1527
+S3 S2+spread*sqrt(tl)      logloss=0.4557 brier=0.1519
+
+Seçilen model katsayıları: intercept=0.0016  {'m_over_sqrt_tl': np.float64(4.7089), 'is_ot': np.float64(-0.0745), 'spread_x_tl': np.float64(-0.0907), 'spread_x_sqrt_tl': np.float64(0.227)}
+
+Kalan süreye göre test Brier (model | sadece spread):
+  OT       n=  1243 model=0.1793 spread=0.2589
+  <5dk     n= 26365 model=0.0685 spread=0.2043
+  5-12dk   n= 36911 model=0.1064 spread=0.2043
+  12-24dk  n= 63276 model=0.1437 spread=0.2043
+  24-36dk  n= 63276 model=0.1746 spread=0.2043
+  36-48dk  n= 63257 model=0.1981 spread=0.2043
+
+Kalibrasyon (test, tüm anlar; 10 eşit genişlikli bölme):
+  (-0.001, 0.1]  n= 28549 tahmin=0.038 gerçek=0.033
+  (0.1, 0.2]     n= 19499 tahmin=0.150 gerçek=0.166
+  (0.2, 0.3]     n= 19048 tahmin=0.250 gerçek=0.276
+  (0.3, 0.4]     n= 18931 tahmin=0.350 gerçek=0.367
+  (0.4, 0.5]     n= 19002 tahmin=0.450 gerçek=0.461
+  (0.5, 0.6]     n= 20451 tahmin=0.551 gerçek=0.538
+  (0.6, 0.7]     n= 23759 tahmin=0.650 gerçek=0.637
+  (0.7, 0.8]     n= 27088 tahmin=0.751 gerçek=0.731
+  (0.8, 0.9]     n= 30310 tahmin=0.851 gerçek=0.820
+  (0.9, 1.0]     n= 47691 tahmin=0.963 gerçek=0.959
+
+Brier farkı (model - sadece spread), maç-kümeli bootstrap: ort=-0.0530 %95 aralık=[-0.0564, -0.0496]

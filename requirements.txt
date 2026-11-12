@@ -1,0 +1,10 @@
+# Tested versions: pandas 3.0.5 / numpy 2.5.3 / pyarrow 26.0.0 / scikit-learn 1.9.1 / requests 2.34.2 (Python 3.13)
+# src/experiments also: lightgbm 4.7.0 / joblib 1.6.0
+# build_dataset.py also ran with pandas 2.3.3 / numpy 2.2.6 / pyarrow 25.0.1 (Python 3.10)
+pandas>=2.3
+numpy>=2.2
+pyarrow>=25
+scikit-learn>=1.9   # train_baseline.py, src/experiments and .joblib models
+requests>=2.32      # only download_raw.py
+lightgbm>=4.6       # only src/experiments (model search); not needed for the baseline and the replay
+joblib>=1.4         # only .joblib model files and src/experiments (comes with scikit-learn)

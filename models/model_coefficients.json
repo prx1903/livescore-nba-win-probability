@@ -1,0 +1,18 @@
+{
+  "features": [
+    "m_over_sqrt_tl",
+    "is_ot",
+    "spread_x_tl",
+    "spread_x_sqrt_tl"
+  ],
+  "intercept": 0.0016007928921085114,
+  "coef": [
+    4.708902949496035,
+    -0.07446300756939433,
+    -0.09072118226825905,
+    0.22695908315800295
+  ],
+  "feature_set": "S3 S2+spread*sqrt(tl)",
+  "train": "dosya yılı 2013-2022",
+  "note": "m=ev sahibi - deplasman; tl=kalan sn (uzatmada uzatma periyodunda kalan)"
+}

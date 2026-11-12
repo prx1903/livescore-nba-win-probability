@@ -1,0 +1,4 @@
+oyuncu-maç sayısı (en az 1 faul): 303685
+6 faul (faulle oyundan çıkma): 3596  (0.0118)
+6 dan fazla: 2  (0.00001)
+faul sayısı dağılımı: {1: 95756, 2: 88541, 3: 63612, 4: 36389, 5: 15789, 6: 3596, 7: 2}

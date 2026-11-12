@@ -1,0 +1,23 @@
+# Large data (rebuilt by src/download_raw.py and src/build_dataset.py)
+data/raw/*.parquet
+data/raw/*.part
+data/processed/pbp_clean/
+data/external/
+
+# Run outputs and caches
+live_state.json
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Model-search cache (rebuilt in seconds by src/experiments/snapshots.py)
+results/experiments/*.parquet
+
+# Generated games (rebuilt by src/simulation/simulate_game.py)
+results/simulation/games/

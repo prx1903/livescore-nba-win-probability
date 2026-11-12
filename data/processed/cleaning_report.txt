@@ -1,0 +1,19 @@
+2013: ham_mac=1312 nba_disi_cikarilan=1 kalan=1311 gecersiz=2 skor_degisen_satir=10347 skor_degisen_mac=1223 reg_tutarsiz=0 zaman_duzeltilen_satir=420724 zaman_duzeltilen_mac=1311 final_celiskili_mac=2
+2014: ham_mac=1315 nba_disi_cikarilan=1 kalan=1314 gecersiz=6 skor_degisen_satir=9396 skor_degisen_mac=1210 reg_tutarsiz=0 zaman_duzeltilen_satir=431749 zaman_duzeltilen_mac=1314 final_celiskili_mac=6
+2015: ham_mac=1308 nba_disi_cikarilan=1 kalan=1307 gecersiz=0 skor_degisen_satir=0 skor_degisen_mac=0 reg_tutarsiz=0 zaman_duzeltilen_satir=431026 zaman_duzeltilen_mac=1307 final_celiskili_mac=0
+2016: ham_mac=1314 nba_disi_cikarilan=1 kalan=1313 gecersiz=7 skor_degisen_satir=8786 skor_degisen_mac=1129 reg_tutarsiz=0 zaman_duzeltilen_satir=434344 zaman_duzeltilen_mac=1313 final_celiskili_mac=7
+2017: ham_mac=1310 nba_disi_cikarilan=1 kalan=1309 gecersiz=3 skor_degisen_satir=9341 skor_degisen_mac=1184 reg_tutarsiz=0 zaman_duzeltilen_satir=437121 zaman_duzeltilen_mac=1309 final_celiskili_mac=2
+2018: ham_mac=1310 nba_disi_cikarilan=2 kalan=1308 gecersiz=6 skor_degisen_satir=4759 skor_degisen_mac=692 reg_tutarsiz=2 zaman_duzeltilen_satir=441248 zaman_duzeltilen_mac=1308 final_celiskili_mac=4
+2019: ham_mac=1314 nba_disi_cikarilan=2 kalan=1312 gecersiz=7 skor_degisen_satir=3973 skor_degisen_mac=668 reg_tutarsiz=0 zaman_duzeltilen_satir=459649 zaman_duzeltilen_mac=1312 final_celiskili_mac=4
+2020: ham_mac=1139 nba_disi_cikarilan=2 kalan=1137 gecersiz=4 skor_degisen_satir=3747 skor_degisen_mac=595 reg_tutarsiz=0 zaman_duzeltilen_satir=0 zaman_duzeltilen_mac=0 final_celiskili_mac=4
+2021: ham_mac=1172 nba_disi_cikarilan=1 kalan=1171 gecersiz=5 skor_degisen_satir=4039 skor_degisen_mac=623 reg_tutarsiz=1 zaman_duzeltilen_satir=0 zaman_duzeltilen_mac=0 final_celiskili_mac=5
+2022: ham_mac=1324 nba_disi_cikarilan=1 kalan=1323 gecersiz=6 skor_degisen_satir=4607 skor_degisen_mac=780 reg_tutarsiz=0 zaman_duzeltilen_satir=0 zaman_duzeltilen_mac=0 final_celiskili_mac=6
+2023: ham_mac=1321 nba_disi_cikarilan=1 kalan=1320 gecersiz=8 skor_degisen_satir=3692 skor_degisen_mac=731 reg_tutarsiz=0 zaman_duzeltilen_satir=0 zaman_duzeltilen_mac=0 final_celiskili_mac=7
+2024: ham_mac=1320 nba_disi_cikarilan=1 kalan=1319 gecersiz=0 skor_degisen_satir=0 skor_degisen_mac=0 reg_tutarsiz=0 zaman_duzeltilen_satir=0 zaman_duzeltilen_mac=0 final_celiskili_mac=0
+2025: ham_mac=1324 nba_disi_cikarilan=3 kalan=1321 gecersiz=0 skor_degisen_satir=0 skor_degisen_mac=0 reg_tutarsiz=0 zaman_duzeltilen_satir=0 zaman_duzeltilen_mac=0 final_celiskili_mac=0
+2026: ham_mac=1325 nba_disi_cikarilan=4 kalan=1321 gecersiz=0 skor_degisen_satir=0 skor_degisen_mac=0 reg_tutarsiz=0 zaman_duzeltilen_satir=0 zaman_duzeltilen_mac=0 final_celiskili_mac=0
+
+TOPLAM maç=18086 geçerli=18032 geçersiz=54
+Geçerli maçlarda uzatma oranı=0.056  ev sahibi kazanma=0.572
+Spread dolu oran (geçerli)=1.000
+Satır sayısı pbp_clean (14 dosya)=8384964

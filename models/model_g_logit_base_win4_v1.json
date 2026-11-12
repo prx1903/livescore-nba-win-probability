@@ -1,0 +1,21 @@
+{
+  "kind": "logistic_coeffs",
+  "features": [
+    "m_over_sqrt_tl",
+    "is_ot",
+    "spread_x_tl",
+    "spread_x_sqrt_tl"
+  ],
+  "intercept": -0.0011105624433413281,
+  "coef": [
+    4.516922350924284,
+    -0.06529106729516915,
+    -0.05327745692433908,
+    0.184068839593008
+  ],
+  "feature_set": "g_logit_base_win4",
+  "train": "dosya yili 2019-2022",
+  "note": "m=ev sahibi - deplasman; tl=kalan sn (uzatmada uzatma periyodunda kalan)",
+  "selection": "ileri yonlu dogrulama 2020/2021/2022, secim olcutu ortalama Brier",
+  "experiment": "model_search"
+}
