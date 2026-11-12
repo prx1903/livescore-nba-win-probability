@@ -120,8 +120,29 @@ out.append({'id': int(info['game_id']), 'home': home, 'away': away, 'tip': 7200 
 print('generated game', away, '@', home, '| expected margin', round(info['mu_m'], 1), '| line', round(sp, 1),
       '| result', info['away_final'], '-', info['home_final'], '| overtime' if info['has_ot'] else '')
 
+# ---- home advantage (demo panel): rating-model home edge H and expected margin mu_m of every game,
+# and season averages of regular-season games played before DATE (no later games are used)
+pre = pd.read_parquet(U + "/results/v2/pregame.parquet").set_index('game_id')
+rat = json.load(open(U + "/results/v2/ratings_params.json", encoding="utf-8"))
+for o in out:
+    if o.get('syn'):
+        # the simulator uses team strengths after each team's last game of the season; same for H
+        o['H'] = round(float(pre[pre.file_year == SIM_SEASON].H.iloc[-1]), 3)
+        o['mu'] = round(float(info['mu_m']), 3)
+    else:
+        p = pre.loc[o['id']]
+        assert abs(float(p.sp) - o['sp']) < 1e-9, o['id']
+        o['H'], o['mu'] = round(float(p.H), 3), round(float(p.mu_m), 3)
+v = g[g.is_valid & (g.game_date < DATE)].copy()
+v['mreg'] = v.home_end_reg - v.away_end_reg
+summ = lambda x: {'n': int(len(x)), 'margin': round(float(x.mreg.mean()), 3), 'spread': round(float(x.spread_home.mean()), 3),
+                  'home_win': round(float(x.home_win_final.mean()), 4)}
+seasons = [dict(season=s, **summ(x)) for s, x in v[(v.season_type == 2) & (v.file_year >= 2013)].groupby('season_label')]
+seasons[-1]['partial'] = 1          # the season of DATE, games before DATE only
+home = {'b': rat['b_sp'], 'seasons': seasons, 'playoff': summ(v[(v.season_type == 3) & (v.file_year >= 2013)])}
+
 D = {'date': DATE, 'types': types, 'dayStart': min(o['tip'] for o in out),
-     'dayEnd': max(o['tip'] + o['dur'] for o in out), 'games': out}
+     'dayEnd': max(o['tip'] + o['dur'] for o in out), 'games': out, 'home': home}
 # opening moment: most games live while at least 2 finished and 2 not started
 best, bestT = -1, D['dayStart']
 for t in range(D['dayStart'], D['dayEnd'], 60):

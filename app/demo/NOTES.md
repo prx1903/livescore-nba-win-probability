@@ -21,6 +21,19 @@
   rebound, free throw, turnover). Shot and rebound locations, times and teams come from the data; pass points and
   rebound directions are only visual. The last 10 shots are marked (team colour, filled = made). At release a ring,
   a dashed arc to the rim and a label ("2'lik / 3'lük", free throw) appear; at the rim a ring shows made or missed.
+- **Data feed:** every event of every game passes the checks of `src/feed_checks.py` (same rules and warning texts;
+  the JavaScript port matched the Python checks on 14,000 random test events). The badge on the game screen, the row in
+  the list and the data panel show the state: normal, warning (a warning in the last 120 game seconds) or stale (no
+  new event for more than 30 s of day clock; at 1x these are real seconds). The feed test in the model view applies to
+  the selected game: "missing events" drops about 30% of its events (fixed seed, the last event always arrives),
+  "40 s delay" stops its feed for 40 s in the middle of the game. That game's score, probability, curve, court and last
+  events then come only from the events that arrived. The real data of this day gives no warning.
+- **Home advantage** (in "Maç öncesi beklenti"): the model takes the expected margin from the pre-game line
+  (expected margin = a + b x line), and the line already contains the home advantage. The panel splits the expected
+  margin into a home part (b x H) and a team-strength part; H is the league-wide home edge learned by the team ratings
+  (`src/v2/ratings.py`, value before the game). This split is an estimate and the panel says so. The season chart shows
+  the mean regulation margin and the mean line of regular-season games; the current season uses only games before
+  18 December 2025.
 - **Model:** Brier score, log loss, errors by season type (including playoff), calibration curve and error by time
   remaining (test seasons 2023-2026, numbers from `results/baseline_report.txt`). For each finished real game, its own
   error. The generated game is excluded from every accuracy number.
@@ -32,9 +45,8 @@
   by `game_play_number` (6,092 events, all 2,239 shots with a location).
 - Error on this day's 12 real games (Brier): model 0.192, pre-game probability alone 0.200. Twelve games are a small
   sample; on the 5,273 test games the values are 0.152 and 0.204.
-- Not real: the start times (assigned for the presentation, see above). The data-feed warning is shown with an
-  example state ("how the warning looks"); it is not yet connected to `src/feed_checks.py`. Hatched boxes are places
-  for content that is not built yet.
+- Not real: the start times (assigned for the presentation, see above). Hatched boxes are places for content that is
+  not built yet.
 - The generated game (MIN @ CHI, 02:30) is not a real game: two of the six teams that did not play that night were
   drawn with a fixed seed and `src/simulation/game_simulator.py` generated the game from 2025-26 team strengths
   (seed 1). It is labelled in the list and on the game screen. Its event texts are generic and its shot locations are
