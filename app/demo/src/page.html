@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NBA canlı kazanma olasılığı — demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/*@style*/
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><b>NBA canlı olasılık</b></div>
+  <nav class="nav">
+    <button id="navM" aria-current="page">Maçlar</button>
+    <button id="navD">Model</button>
+  </nav>
+  <div class="right transport">
+    <button class="playbtn" id="play" title="Oynat / duraklat">▶</button>
+    <input type="range" id="scrub" aria-label="Gün içinde ilerle">
+    <span id="clock" class="num"></span>
+    <label class="spd">hız
+      <select id="speed">
+        <option value="1">1×</option>
+        <option value="5">5×</option>
+        <option value="10">10×</option>
+        <option value="20" selected>20×</option>
+        <option value="50">50×</option>
+        <option value="60">60×</option>
+      </select>
+    </label>
+    <button class="iconbtn" id="theme" title="Açık / koyu">◐</button>
+  </div>
+</header>
+
+<!-- ============ MAÇLAR ============ -->
+<div class="app" id="viewMatches">
+  <!-- sol: maç listesi -->
+  <div class="rail">
+    <div class="panel">
+      <div class="lhead"><span class="d">18 Aralık 2025</span><span class="n" id="cnt"></span></div>
+      <div class="filters" id="filters">
+        <button data-f="all" aria-pressed="true">Tümü</button>
+        <button data-f="live" aria-pressed="false">Canlı</button>
+        <button data-f="final" aria-pressed="false">Bitti</button>
+        <button data-f="pre" aria-pressed="false">Başlamadı</button>
+      </div>
+      <div id="list"></div>
+    </div>
+  </div>
+
+  <!-- orta: maç -->
+  <div>
+    <div class="panel">
+      <div class="hero">
+        <div class="status" id="st"></div>
+        <div class="score" id="sc"></div>
+        <div class="tug">
+          <div class="bar"><i class="aa" id="barA"></i><i class="hh" id="barH"></i></div>
+          <div class="lab"><span id="labA"></span><span id="labH"></span></div>
+          <p id="tugTxt"></p>
+        </div>
+      </div>
+      <div class="chart">
+        <h3>Olasılığın maç içindeki seyri</h3>
+        <p class="cap" id="curveCap"></p>
+        <div id="curveWrap"></div>
+      </div>
+    </div>
+
+    <div class="panel sec">
+      <button><span class="t">Maçın akışı</span><span class="d">periyot skorları, deplasman – ev sahibi</span></button>
+      <div class="body"><div class="pergrid" id="per"></div></div>
+    </div>
+
+    <div class="panel sec">
+      <button><span class="t">Skor dağılımı</span><span class="d">hangi skor ne kadar olası</span></button>
+      <div class="body"><div class="stub" style="height:150px">v4'teki skor ızgarası ve kazanma/uzatma yüzdeleri buraya taşınacak.</div></div>
+    </div>
+
+    <div class="panel sec">
+      <button><span class="t">Şu an neden bu olasılık?</span><span class="d">olasılığın parçaları</span></button>
+      <div class="body"><div class="stub" style="height:130px">v4'teki parça grafiği (maç öncesi beklenti, ev sahibi avantajı, takım gücü, skor farkı, kalan süre) buraya taşınacak.</div></div>
+    </div>
+
+    <div class="panel sec">
+      <button><span class="t">Maç öncesi beklenti</span><span class="d">güç farkı ve ev sahibi avantajı</span></button>
+      <div class="body">
+        <dl class="kv" id="pre"></dl>
+        <h3 style="margin:18px 0 0;font-size:15px">Ev sahibi avantajı</h3>
+        <dl class="kv" id="homeSplit" style="padding-top:6px"></dl>
+        <p class="note" id="homeTxt"></p>
+        <div class="chartbox" id="homeChart" style="margin-top:12px;--cw:640px"></div>
+        <p class="note" id="homePO"></p>
+        <div class="stub" style="height:70px;margin-top:14px">Güç skalası görseli buraya taşınacak.</div>
+      </div>
+    </div>
+
+    <div class="panel sec">
+      <button><span class="t">Ne olurdu?</span><span class="d">senaryo denemesi</span></button>
+      <div class="body">
+        <p class="note" style="margin-top:14px">Periyodu, kalan süreyi ve skoru değiştir: bu maç o durumda olsaydı iki takımın kazanma olasılığı ne olurdu?</p>
+        <div class="wi-ctl">
+          <label>Periyot
+            <select id="wiPer">
+              <option value="1">1. periyot</option><option value="2">2. periyot</option><option value="3">3. periyot</option>
+              <option value="4">4. periyot</option><option value="5">1. uzatma</option><option value="6">2. uzatma</option>
+              <option value="7">3. uzatma</option>
+            </select></label>
+          <label>Periyotta kalan süre: <output id="wiRemOut" for="wiRem"></output>
+            <input type="range" id="wiRem" min="0" max="720" step="5"></label>
+          <label><span id="wiALab"></span><input type="number" id="wiA" min="0" max="250" step="1" inputmode="numeric"></label>
+          <label><span id="wiHLab"></span><input type="number" id="wiH" min="0" max="250" step="1" inputmode="numeric"></label>
+          <button type="button" class="linkbtn" id="wiReset">Maçın şu anki durumuna dön</button>
+        </div>
+        <div class="tug">
+          <div class="bar"><i class="aa" id="wiBarA"></i><i class="hh" id="wiBarH"></i></div>
+          <div class="lab"><span id="wiLabA"></span><span id="wiLabH"></span></div>
+        </div>
+        <dl class="kv" id="wiOut"></dl>
+        <h3 style="margin:18px 0 0;font-size:15px" id="wiTabH"></h3>
+        <table class="t" id="wiTab"></table>
+        <p class="note" id="wiNote"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- sağ: yardımcı paneller -->
+  <div class="rail-r">
+    <div class="panel"><h3>Günün durumu</h3><div class="sum" id="sum"></div></div>
+    <div class="panel"><h3>Son olaylar</h3>
+      <div class="courtwrap">
+        <svg id="court" class="court" viewBox="-0.5 -5.75 51 48.25" role="img" aria-label="Pozisyon akışı ve son şutların sahadaki yerleri">
+          <g class="clines">
+            <rect class="cfloor" x="0" y="-5.25" width="50" height="47"/>
+            <rect x="17" y="-5.25" width="16" height="19"/>
+            <path d="M19 13.75 A6 6 0 0 0 31 13.75"/>
+            <path d="M21 0 A4 4 0 0 0 29 0"/>
+            <path d="M3 -5.25 L3 8.95 A23.75 23.75 0 0 0 47 8.95 L47 -5.25"/>
+            <path d="M19 41.75 A6 6 0 0 1 31 41.75"/>
+            <line x1="22" y1="-1.25" x2="28" y2="-1.25"/>
+            <circle cx="25" cy="0" r="0.75"/>
+          </g>
+          <g id="shots"></g>
+          <g id="shotFx"></g>
+          <polyline id="ballTrail" class="btrail" points=""/>
+          <ellipse id="ballShadow" class="bshadow" rx="1.05" ry="0.55" cx="-9" cy="-9"/>
+          <circle id="ballHalo" class="bhalo" r="2" cx="-9" cy="-9"/>
+          <circle id="ball" class="ball" r="1" cx="-9" cy="-9"/>
+        </svg>
+        <p class="courtcap" id="courtCap"></p>
+      </div>
+      <ul class="feedlist" id="feed"></ul></div>
+    <div class="panel"><h3>Veri durumu</h3><div class="datapanel" id="data"></div></div>
+  </div>
+</div>
+
+<!-- ============ MODEL ============ -->
+<div class="model hidden" id="viewModel">
+  <h1>Model ne kadar güvenilir?</h1>
+  <p class="lead">Buradaki sayılar modelin hiç görmediği maçlardan geliyor: model 2013-2022 dosya yıllarıyla eğitildi,
+     ölçümler 2023-2026 maçlarında yapıldı. Maç ekranında bu sayılar yer almaz; orada yalnızca veri akışında bir sorun
+     olduğunda uyarı rozeti çıkar.</p>
+  <div class="tiles">
+    <div class="tile"><div class="v" id="tBrier"></div><div class="k">Brier hatası (0 en iyi)</div></div>
+    <div class="tile"><div class="v" id="tLogloss"></div><div class="k">Log kayıp</div></div>
+    <div class="tile"><div class="v" id="tN"></div><div class="k">Test anı</div></div>
+    <div class="tile"><div class="v">0,2500</div><div class="k">Hep %50 deseydik Brier</div></div>
+  </div>
+
+  <section>
+    <h2>Kalibrasyon</h2>
+    <p>Model %70 dediğinde gerçekten yüzde yetmiş kazanıyor mu sorusunun cevabı.</p>
+    <div class="chartbox" id="calChart"></div>
+    <p class="note" id="calNote"></p>
+  </section>
+
+  <section>
+    <h2>Maç ilerledikçe hata</h2>
+    <p>Brier hatası (0 en iyi) maçın hangi bölümünde ölçüldüğüne göre. Karşılaştırma: yalnızca maç öncesi çizgiyi bilen model.</p>
+    <div class="chartbox" id="timeChart"></div>
+    <p class="note" id="timeNote"></p>
+  </section>
+
+  <section>
+    <h2>Maç türüne göre hata</h2>
+    <p>Model tüm maç türleriyle birlikte eğitildi; playoff ve play-in için ayrı ayar yok.</p>
+    <table class="t">
+      <thead><tr><th>Tür</th><th>Maç</th><th>An</th><th>Brier</th><th>%95 aralık</th><th>Log kayıp</th></tr></thead>
+      <tbody id="seasonRows"></tbody>
+    </table>
+    <p class="note" id="seasonNote"></p>
+  </section>
+
+  <section>
+    <h2>Veri akışı kontrolleri</h2>
+    <p>Gelen her olay bu kurallardan geçer. Model yalnızca kabul edilen son duruma göre olasılık hesaplar.</p>
+    <ul class="rules">
+      <li>Skor, periyot veya süre alanı boşsa olay atlanır.</li>
+      <li>Sıra numarası geriye giderse olay tekrar sayılıp atlanır; araya boşluk girerse kaç olayın eksik olduğu bildirilir.</li>
+      <li>Oyun saati geri giderse olay atlanır.</li>
+      <li>Skor gerilerse önceki skor korunur ve uyarı verilir.</li>
+      <li>Periyot birden fazla atlarsa ya da iki olay arasında 120 saniyeden uzun oyun süresi geçerse uyarı verilir.</li>
+      <li>Gerçek saatle 30 saniye yeni olay gelmezse veri bayat sayılır.</li>
+      <li>Maç öncesi çizgi yoksa iki takım denk kabul edilir ve bu bildirilir.</li>
+    </ul>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <label>Akış testi
+        <select id="feedMode">
+          <option value="normal">normal akış</option>
+          <option value="drop">olayların %30'u eksik</option>
+          <option value="delay">40 saniye gecikme</option>
+        </select>
+      </label>
+      <span class="note" style="margin:0">Test, maç ekranında seçili maça uygulanır: o maçın rozeti, satırı, skoru ve olasılığı yalnızca ulaşan olaylardan gelir.</span>
+    </div>
+    <div class="fs-st" id="fsSt"><i></i><span></span></div>
+    <p class="note" id="fsGame" style="margin-top:4px"></p>
+    <div class="fs-grid">
+      <div><div class="k">Kabul edilen olay</div><div class="v" id="fsAcc">0</div></div>
+      <div><div class="k">Atlanan olay</div><div class="v" id="fsRej">0</div></div>
+      <div><div class="k">Ulaşmayan olay</div><div class="v" id="fsMiss">0</div></div>
+      <div><div class="k">Uyarı</div><div class="v" id="fsWarn">0</div></div>
+      <div><div class="k">Son veri</div><div class="v" id="fsAge">–</div></div>
+    </div>
+    <h3 style="margin:18px 0 0;font-size:15px">Son uyarılar</h3>
+    <ul class="fs-warns" id="fsWarns"></ul>
+  </section>
+
+  <section>
+    <h2>Model sağlığı</h2>
+    <p>Katman 4'te eklenecek: kalibrasyonun zaman içinde kayıp kaymadığını gösteren panel.</p>
+    <div class="stub" style="height:90px">Henüz yapılmadı.</div>
+  </section>
+
+  <section>
+    <h2>Veri kaynağı</h2>
+    <p>Maç verisi: <a href="https://github.com/sportsdataverse/hoopR-nba-data">sportsdataverse/hoopR-nba-data</a>
+      (<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; kaynak deponun belirttiğine göre ESPN play-by-play verisi).
+      Veri bu projede temizlendi (skor, süre ve geçerlilik düzeltmeleri); olasılıklar projenin kendi modelinden.
+      Üretilmiş maç gerçek değildir.</p>
+  </section>
+</div>
+
+<script>
+/*@data*/
+/*@script*/
+</script>
+</body>
+</html>

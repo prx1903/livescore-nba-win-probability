@@ -1,6 +1,7 @@
 # Demo page
 
-`docs/index.html` is one self-contained page (the interface is in Turkish). It replays the NBA night of
+`docs/index.html` is one self-contained page (the interface is in Turkish). It is built from `app/demo/src`
+by `build_page.py`; edit the sources, not the page. It replays the NBA night of
 18 December 2025: 12 real games and one generated game, all on one day clock.
 
 ## Time
@@ -8,21 +9,23 @@
   (longer with overtime). Breaks between quarters and stoppages are not modelled.
 - Speeds 1x, 5x, 10x, 20x (default), 50x, 60x. The speed of each was measured (8-10 s each); the largest deviation
   was 0.2%. The page draws 60 frames per second.
-- Top bar: play/pause (also the space bar), a slider over the day, speed choice. Arrow keys change the game.
+- Top bar: play/pause (also the space bar), a slider over the day, speed choice. Arrow keys change the game, in the order shown in the list.
 - The day runs from 02:00 to 04:23 (143 minutes at 1x, 7 minutes at 20x). The page opens paused at 02:51 with
   7 games live (one generated), 2 finished and 4 not started.
 - The game clock also runs between events: period and time left come from the day clock, the score from the last
-  event. Events arrive on average 6, at most 28 game seconds apart.
+  event. Events arrive on average 6, at most 30 game seconds apart.
 
 ## Views
-- **Games:** the list of games, the selected game (win probability, its curve, score), the day panel, the last
-  events and the data status.
+- **Games:** the list of games, the selected game (win probability of both teams, its curve, score), the day panel,
+  the last events and the data status. The list shows the team that is more likely to win.
+  A finished game shows its result: the winner has 100% (the model's value at the last event can be 99% in a
+  one-point game), and the text names the winner instead of a forecast.
 - **Half court:** the ball moves frame by frame with the game clock (entry from half court, pass points, arcing shot,
   rebound, free throw, turnover). Shot and rebound locations, times and teams come from the data; pass points and
   rebound directions are only visual. The last 10 shots are marked (team colour, filled = made). At release a ring,
   a dashed arc to the rim and a label ("2'lik / 3'lük", free throw) appear; at the rim a ring shows made or missed.
 - **Data feed:** every event of every game passes the checks of `src/feed_checks.py` (same rules and warning texts;
-  the JavaScript port matched the Python checks on 14,000 random test events). The badge on the game screen, the row in
+  `tests/test_feed_parity.py` compares the JavaScript port with the Python checks on 16,000 random events). The badge on the game screen, the row in
   the list and the data panel show the state: normal, warning (a warning in the last 120 game seconds) or stale (no
   new event for more than 30 s of day clock; at 1x these are real seconds). The feed test in the model view applies to
   the selected game: "missing events" drops about 30% of its events (fixed seed, the last event always arrives),
@@ -34,16 +37,28 @@
   (`src/v2/ratings.py`, value before the game). This split is an estimate and the panel says so. The season chart shows
   the mean regulation margin and the mean line of regular-season games; the current season uses only games before
   18 December 2025.
-- **Model:** Brier score, log loss, errors by season type (including playoff), calibration curve and error by time
+- **Model:** Brier score, log loss, the Brier score of always saying 50% (exactly 0.25), errors by season type (including playoff), calibration curve for both teams (every
+  test moment counted once for each team) and error by time
   remaining (test seasons 2023-2026, numbers from `results/baseline_report.txt`). For each finished real game, its own
   error. The generated game is excluded from every accuracy number.
+
+- **What if? ("Ne olurdu?"):** the user sets the period, the time left and the score of the selected game. The win
+  probability of both teams comes from the model of the match screen (logistic; the page function `winProb` is the
+  formula of `src/winprob.py`), the overtime probability and the expected final score from the score-distribution
+  model (`ScoreModel`, the calculation of `src/v2/refmodel.py`); `tests/test_model_parity.py` compares both with the
+  Python code. Until a control is changed the panel follows the game. With no time left and a score that is not tied
+  the game is decided (100%). A table shows the same lead at different times left.
+- **Numbers of the Model view** are read from `results/baseline_report.txt` and `results/season_type_report.txt` when
+  the page is built; none is typed into the sources (`tests/test_demo_page.py` checks this).
 
 ## What is real and what is not
 - Real: the 12 games, teams, scores, period scores and event texts (from `data/processed`; final scores match
   `games.csv`). Win probabilities are recomputed for every event with `models/model_coefficients.json`. Shot locations
   come from `data/raw/play_by_play_2026.parquet` (`coordinate_x_raw`, `coordinate_y_raw`), matched to the clean data
   by `game_play_number` (6,092 events, all 2,239 shots with a location).
-- Error on this day's 12 real games (Brier): model 0.192, pre-game probability alone 0.200. Twelve games are a small
+- Error on this day's 12 real games (Brier): model 0.191, pre-game probability alone 0.199
+  (snapshots every 60 s, the end of regulation excluded, as in the test; always measured on the complete events,
+  also while a feed test is running). Twelve games are a small
   sample; on the 5,273 test games the values are 0.152 and 0.204.
 - Not real: the start times (assigned for the presentation, see above). Hatched boxes are places for content that is
   not built yet.
@@ -58,8 +73,12 @@ Play-by-play: [sportsdataverse/hoopR-nba-data](https://github.com/sportsdatavers
 
 ## Rebuilding
 ```
-python -I app/demo/build_day_data.py                                   # -> app/demo/day_data.json
-python -I app/demo/embed_day_data.py docs/index.html app/demo/day_data.json
+python -I app/demo/build_day_data.py     # -> app/demo/day_data.json
+python -I app/demo/build_page.py         # -> docs/index.html
 ```
+Page sources: `src/page.html` (structure), `src/style.css`, `src/js/*.js` (joined in file-name order). `build_page.py`
+adds the generated constants: `DAY` (day_data.json), `ACC` (accuracy numbers from `results/`), `LOGIT`
+(`models/model_coefficients.json`) and `MODEL` (`results/v2/sim_params.json`). `embed_day_data.py` is the old command
+and now only calls `build_page.py`.
 `build_day_data.py` needs the cleaned 2026 play-by-play and the raw 2026 file (not in git). Other locations can be
 given with the environment variables `LIVESCORE_REPO` and `LIVESCORE_RAW`.

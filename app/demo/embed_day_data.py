@@ -1,11 +1,5 @@
-"""Embeds the day data into the demo page: only the line 'const DAY=...;' of the HTML changes.
-Usage (from the repository root): python -I app/demo/embed_day_data.py docs/index.html app/demo/day_data.json"""
-import sys, json, re
-html_path, data_path = sys.argv[1:3]
-h = open(html_path, encoding='utf-8').read()
-D = json.load(open(data_path, encoding='utf-8'))
-m = re.findall(r'^const DAY=.*;$', h, flags=re.M)
-assert len(m) == 1, 'DAY line not found'
-h = h.replace(m[0], 'const DAY=' + json.dumps(D, ensure_ascii=False, separators=(',', ':')) + ';')
-open(html_path, 'w', encoding='utf-8').write(h)
-print('embedded:', len(D['games']), 'games,', sum(len(g['ev']) for g in D['games']), 'events')
+"""Old command, kept so that existing instructions still work: the page is now built by build_page.py.
+Usage (from the repository root): python app/demo/embed_day_data.py   (same as: python -I app/demo/build_page.py)"""
+import os, runpy, sys
+sys.argv = [sys.argv[0]]                 # the old arguments (page and data file) are fixed paths in build_page.py
+runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'build_page.py'), run_name='__main__')

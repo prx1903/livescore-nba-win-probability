@@ -70,6 +70,22 @@ def test_cizgi_yoksa_uyari():
     assert v == -4.5 and w is None
 
 
+def test_sira_sifirdan_baslarsa_tekrar_yakalanir():
+    # sequence numbers that start at 0 (some live feeds): a repeated 0 must be rejected like any other repeat
+    s = FeedState()
+    ok, w = check_event(s, 2, 0, 1, 20, 2860, seq=0)
+    assert ok and w == []
+    ok, w = check_event(s, 2, 0, 1, 20, 2860, seq=0)
+    assert not ok and s.n_rejected == 1 and any('tekrar' in x for x in w)
+
+
+def test_sira_sifirdan_baslarsa_bosluk_bildirilir():
+    s = FeedState()
+    check_event(s, 2, 0, 1, 20, 2860, seq=0)
+    ok, w = check_event(s, 4, 0, 1, 40, 2840, seq=3)
+    assert ok and any('2 olay eksik' in x for x in w)
+
+
 if __name__ == '__main__':
     n = 0
     for name, f in list(globals().items()):

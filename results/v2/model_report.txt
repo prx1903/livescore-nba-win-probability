@@ -24,19 +24,19 @@ Kalan süre belirsizliği sd (fark): 48dk=13.32 24dk=10.47 12dk=7.71 2dk=3.62
   fark ortalamasında en büyük sapma (eğitim, dakika bazında): 0.20 sayı
 
 === 4) TEST 2023-2026: KAZANMA OLASILIĞI (aynı anlık görüntüler) ===
-Lojistik, teslim edilen (zamanı kaymış veriyle eğitilmiş): Brier=0.1519 log loss=0.4557  n=254328
-Lojistik, düzeltilmiş veriyle yeniden eğitildi:           Brier=0.1519 log loss=0.4557
+Lojistik, teslim edilen (models/model_coefficients.json):  Brier=0.1519 log loss=0.4557  n=254328
+Lojistik, bu betikte yeniden eğitildi (kontrol):         Brier=0.1519 log loss=0.4557
   yeni katsayılar: sabit=0.0016 [4.7089, -0.0745, -0.0907, 0.227]
 Yeni model (skor dağılımı):                             Brier=0.1521 log loss=0.4561
 Fark (yeni - teslim edilen lojistik), maç kümeli bootstrap: +0.0002 [%95: -0.0005, +0.0009]
-Fark (yeni - düzeltilmiş lojistik): +0.0002 [%95: -0.0005, +0.0009]
-Fark (düzeltilmiş - teslim edilen lojistik): +0.0000 [%95: -0.0000, +0.0000]
-  36-48 dk  n= 63257 teslim edilen=0.1981 düzeltilmiş=0.1981 yeni=0.1977
-  24-36 dk  n= 63276 teslim edilen=0.1746 düzeltilmiş=0.1746 yeni=0.1748
-  12-24 dk  n= 63276 teslim edilen=0.1437 düzeltilmiş=0.1437 yeni=0.1442
-  5-12 dk   n= 36911 teslim edilen=0.1064 düzeltilmiş=0.1064 yeni=0.1070
-  Son 5 dk  n= 26365 teslim edilen=0.0685 düzeltilmiş=0.0685 yeni=0.0688
-  Uzatma    n=  1243 teslim edilen=0.1793 düzeltilmiş=0.1793 yeni=0.1786
+Fark (yeni - yeniden eğitilen lojistik): +0.0002 [%95: -0.0005, +0.0009]
+Fark (yeniden eğitilen - teslim edilen lojistik): +0.0000 [%95: -0.0000, +0.0000]
+  36-48 dk  n= 63257 teslim edilen=0.1981 yeniden eğitilen=0.1981 yeni=0.1977
+  24-36 dk  n= 63276 teslim edilen=0.1746 yeniden eğitilen=0.1746 yeni=0.1748
+  12-24 dk  n= 63276 teslim edilen=0.1437 yeniden eğitilen=0.1437 yeni=0.1442
+  5-12 dk   n= 36911 teslim edilen=0.1064 yeniden eğitilen=0.1064 yeni=0.1070
+  Son 5 dk  n= 26365 teslim edilen=0.0685 yeniden eğitilen=0.0685 yeni=0.0688
+  Uzatma    n=  1243 teslim edilen=0.1793 yeniden eğitilen=0.1793 yeni=0.1786
 Kalibrasyon (yeni model, 10 bölme): 
                    n  tahmin  gercek
 b                                   

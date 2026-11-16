@@ -18,7 +18,8 @@ Kurallar:
   - Maç öncesi çizgi (spread) yoksa 0 (denk maç) kullanılır ve bu açıkça bildirilir.
 """
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from typing import Optional
 
 MAX_GAP_GAME_SEC = 120.0
 STALE_AFTER_SEC = 30.0
@@ -34,7 +35,7 @@ class FeedState:
     n_accepted: int = 0
     n_rejected: int = 0
     n_warnings: int = 0
-    last_seq: int = 0
+    last_seq: Optional[int] = None   # None until the first numbered event (a feed may start counting at 0)
 
 
 def _missing(x):
@@ -51,10 +52,10 @@ def check_event(state, home, away, period, elapsed, secs_left, seq=None):
     warnings = []
     if seq is not None and not _missing(seq):
         seq = int(seq)
-        if state.last_seq and seq <= state.last_seq:
+        if state.last_seq is not None and seq <= state.last_seq:
             state.n_rejected += 1
             return False, [f'Olay tekrar etti ya da sırası bozuk (sıra {state.last_seq} -> {seq}), atlandı.']
-        if state.last_seq and seq > state.last_seq + 1:
+        if state.last_seq is not None and seq > state.last_seq + 1:
             warnings.append(f'{seq - state.last_seq - 1} olay eksik (sıra {state.last_seq} -> {seq}); skor ve süre son gelen olaydan alındı.')
     if state.n_accepted and elapsed < state.elapsed - 0.5:
         state.n_rejected += 1

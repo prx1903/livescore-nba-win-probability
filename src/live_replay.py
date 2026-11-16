@@ -27,7 +27,7 @@ from winprob import load_model, predict
 from feed_checks import FeedState, check_event, data_age, is_stale, spread_or_default, STALE_AFTER_SEC
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--data'); ap.add_argument('--model', required=True)
+ap.add_argument('--data'); ap.add_argument('--model')
 ap.add_argument('--game', type=int); ap.add_argument('--speed', type=float, default=20.0)
 ap.add_argument('--out', default='live_state.json'); ap.add_argument('--list', action='store_true')
 ap.add_argument('--stale-after', type=float, default=STALE_AFTER_SEC)
@@ -38,6 +38,8 @@ ap.add_argument('--away', default='random'); ap.add_argument('--season', default
 ap.add_argument('--sim-seed', type=int, default=0)
 ap.add_argument('--repo', default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 a = ap.parse_args()
+if not a.list and not a.model:
+    ap.error('--model gerekli (model dosyası, örnek: models/model_coefficients.json)')
 
 if a.sim:
     # synthetic game: same event columns as pbp_clean, so the rest of the script is unchanged
@@ -58,6 +60,10 @@ else:
     if a.list:
         print(games[(games.file_year >= 2023) & games.is_valid & games.has_ot].head(10)[['game_date', 'home_abbrev', 'away_abbrev', 'home_final', 'away_final']])
         raise SystemExit
+    if a.game is None:
+        ap.error('--game gerekli: maç numarası (örnek numaralar için --list)')
+    if a.game not in games.index:
+        ap.error(f'--game {a.game}: bu numarada maç yok ({os.path.join(a.data, "games.csv")}); örnek numaralar için --list')
     g = games.loc[a.game]
     year = int(g.file_year)
     ev = pd.read_parquet(os.path.join(a.data, 'pbp_clean', f'pbp_clean_{year}.parquet'))
@@ -135,6 +141,12 @@ while True:
     write_state(False, 0.0)
     print(f"P{state['period']} {state['clock']:>5}  {g.away_abbrev} {state['away']:3d} - {state['home']:3d} {g.home_abbrev}  "
           f"P({g.home_abbrev} kazanır)={p:5.1%}  {state['event']}")
-print(f"Bitti. Son skor {g.away_abbrev} {g.away_final} - {g.home_final} {g.home_abbrev}; son olasılık {history[-1]['p_home_win']:.1%}; {'üretilen sonuç' if a.sim else 'gerçek'}: "
-      f"{'ev sahibi kazandı' if g.home_win_final else 'deplasman kazandı'}")
+result = f"{'üretilen sonuç' if a.sim else 'gerçek'}: {'ev sahibi kazandı' if g.home_win_final else 'deplasman kazandı'}"
+if history:
+    # the last probability is the model's value at the last event, not the result
+    print(f"Bitti. Son skor {g.away_abbrev} {g.away_final} - {g.home_final} {g.home_abbrev}; modelin son olasılığı "
+          f"P({g.home_abbrev} kazanır)={history[-1]['p_home_win']:.1%}; {result}")
+else:
+    print(f"Bitti. Kabul edilen olay yok: olasılık hesaplanamadı. Kayıtlı skor {g.away_abbrev} {g.away_final} - "
+          f"{g.home_final} {g.home_abbrev}; {result}")
 print(f"Kabul edilen olay: {fs.n_accepted}, atlanan: {fs.n_rejected}, uyarı: {fs.n_warnings}")

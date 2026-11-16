@@ -94,6 +94,24 @@ for path in MODELS:
     # 8) son saniye: kalan sure 0 iken bolme hatasi olmamali
     check(0 < winprob.predict(m, 1, 0.0, False, 0.0) < 1, f'{tag}: kalan sure 0 saniyede tahmin calisiyor')
 
+    # 8b) clock slightly below zero (an event that arrives after the horn): treated as 0, no math error
+    try:
+        late = winprob.predict(m, 1, -0.4, False, 0.0)
+    except ValueError:
+        late = None
+    check(late == winprob.predict(m, 1, 0.0, False, 0.0), f'{tag}: kalan sure eksiye duserse 0 sayilir')
+
+    # 8c) missing pre-game line: a clear error that names the fix, not a TypeError inside the formula
+    msgs = []
+    for missing in (None, float('nan')):
+        try:
+            winprob.predict(m, 1, 60.0, False, missing); msgs.append('')
+        except ValueError as e:
+            msgs.append(str(e))
+        except TypeError:
+            msgs.append('')
+    check(all('spread_or_default' in x for x in msgs), f'{tag}: cizgi yoksa acik hata mesaji')
+
 # 9) eski cagri bicimi (load_model) hala ayni sonucu veriyor
 old = winprob.load_model(os.path.join(ROOT, 'models', 'model_coefficients.json'))
 new = winprob.load(os.path.join(ROOT, 'models', 'model_coefficients.json'))

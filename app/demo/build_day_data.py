@@ -6,13 +6,13 @@ Event row: [elapsed s, probability, home score, away score, period, clock, event
   3 offensive rebound, 4 defensive rebound, 5 turnover, 6 start of period / jump ball, 7 end of period / game.
 Shot locations ('sh'): for real games from the raw file, for the generated game from the simulator's location table
 (shot distribution of the training season 2022; results/simulation/shot_locations.json).
-Usage (from the repository root): python -I app/demo/build_day_data.py   -> app/demo/day_data.json
+Usage (from the repository root): python -I app/demo/build_day_data.py [output file]   -> app/demo/day_data.json
 Needs data/processed/pbp_clean/pbp_clean_2026.parquet and data/raw/play_by_play_2026.parquet (not in git)."""
-import json, math, os, sys
+import json, os, sys
 import pandas as pd
 
 U = os.environ.get("LIVESCORE_REPO", os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')))
-OUT = os.path.join(U, 'app', 'demo', 'day_data.json')
+OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(U, 'app', 'demo', 'day_data.json')
 # Generated game (not real): two of the six teams that did not play that night, 2025-26 strengths, fixed seed.
 SIM_SEASON, SIM_SEED, SIM_TIP_MIN = 2026, 1, 30
 # Shot locations from the raw file (data/raw, coordinate_x_raw / coordinate_y_raw): x 0-50 ft (sideline to sideline),
@@ -26,11 +26,12 @@ TIP_MIN = [0, 0, 10, 20, 30, 30, 40, 50, 60, 70, 80, 90]   # minutes after 02:00
 mdl = json.load(open(U + "/models/model_coefficients.json", encoding="utf-8"))
 
 
+sys.path.insert(0, os.path.join(U, 'src'))
+import winprob          # the one prediction function shared by training, replay and demo
+
+
 def predict(m, tl, ot, sp):
-    f = {'m_over_sqrt_tl': m / math.sqrt(tl + 1.0), 'is_ot': 1.0 if ot else 0.0,
-         'spread_x_tl': sp * (tl / 2880.0), 'spread_x_sqrt_tl': sp * math.sqrt(tl / 2880.0)}
-    z = mdl['intercept'] + sum(c * f[n] for n, c in zip(mdl['features'], mdl['coef']))
-    return 1.0 / (1.0 + math.exp(-z))
+    return winprob.predict(mdl, m, tl, ot, sp)
 
 
 g = pd.read_csv(U + "/data/processed/games.csv")
@@ -78,6 +79,9 @@ def ti(t):
 out = []
 for i, r in d.iterrows():
     ev = pbp[pbp.game_id == r.game_id].sort_values('game_play_number').reset_index(drop=True)
+    if pd.isna(r.spread_home):
+        raise SystemExit(f'game {r.game_id} ({r.away_abbrev} @ {r.home_abbrev}) has no pre-game line; '
+                         'the demo page needs a line for every game')
     sp = float(r.spread_home)
     rows = [[int(e.game_seconds_elapsed), round(predict(e.home_score - e.away_score, e.start_game_seconds_remaining,
              e.period_number > 4, sp), 3), int(e.home_score), int(e.away_score), int(e.period_number),
@@ -120,7 +124,8 @@ out.append({'id': int(info['game_id']), 'home': home, 'away': away, 'tip': 7200 
 print('generated game', away, '@', home, '| expected margin', round(info['mu_m'], 1), '| line', round(sp, 1),
       '| result', info['away_final'], '-', info['home_final'], '| overtime' if info['has_ot'] else '')
 
-# ---- home advantage (demo panel): rating-model home edge H and expected margin mu_m of every game,
+# ---- pre-game expectations: rating-model home edge H, expected regulation margin mu_m ('mu') and total mu_t ('mt')
+# of every game (home-advantage panel and score-distribution model),
 # and season averages of regular-season games played before DATE (no later games are used)
 pre = pd.read_parquet(U + "/results/v2/pregame.parquet").set_index('game_id')
 rat = json.load(open(U + "/results/v2/ratings_params.json", encoding="utf-8"))
@@ -128,11 +133,11 @@ for o in out:
     if o.get('syn'):
         # the simulator uses team strengths after each team's last game of the season; same for H
         o['H'] = round(float(pre[pre.file_year == SIM_SEASON].H.iloc[-1]), 3)
-        o['mu'] = round(float(info['mu_m']), 3)
+        o['mu'], o['mt'] = round(float(info['mu_m']), 3), round(float(info['mu_t']), 3)
     else:
         p = pre.loc[o['id']]
         assert abs(float(p.sp) - o['sp']) < 1e-9, o['id']
-        o['H'], o['mu'] = round(float(p.H), 3), round(float(p.mu_m), 3)
+        o['H'], o['mu'], o['mt'] = round(float(p.H), 3), round(float(p.mu_m), 3), round(float(p.mu_t), 3)
 v = g[g.is_valid & (g.game_date < DATE)].copy()
 v['mreg'] = v.home_end_reg - v.away_end_reg
 summ = lambda x: {'n': int(len(x)), 'margin': round(float(x.mreg.mean()), 3), 'spread': round(float(x.spread_home.mean()), 3),

@@ -1,0 +1,29 @@
+# Runs every test file on each push to main and on pull requests.
+# The tests need no large data: they use the files in models/, results/, data/processed/games.csv and app/demo/.
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: pip
+      - name: Install packages
+        run: pip install -r requirements.txt
+      - name: Node (runs the page functions in the tests)
+        run: node --version
+      - name: Tests
+        run: |
+          for t in tests/test_*.py; do
+            echo "::group::$t"
+            python "$t"
+            echo "::endgroup::"
+          done

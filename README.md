@@ -1,8 +1,9 @@
 # NBA live win probability
 
-A research project that estimates, at every moment of an NBA game, the probability that the home team wins.
-It also gives the probability of overtime, the expected final score and the outcome of each period, and it can
-replay games event by event as if they were live.
+A research project that estimates, at every moment of an NBA game, which team will win: the win probability of each
+of the two teams (they add up to 1). It also gives the probability of overtime, the expected final score and the
+outcome of each period, and it can replay games event by event as if they were live. Internally the models compute
+the home team's probability p; the away team's is 1 − p.
 
 **Demo:** `docs/index.html` (open it in a browser, or see the GitHub Pages link of this repository).
 It replays one NBA night (12 real games of 18 December 2025 and one generated game) with the live probability,
@@ -18,6 +19,8 @@ the text reports in `results/` are in Turkish.
 | Score-distribution model (`src/v2`) | 0.1521 | 0.4561 |
 
 - Difference logistic − spread only: −0.0530, 95% game-clustered bootstrap interval [−0.0564, −0.0496].
+  The table averages over all snapshots; the difference is averaged within each game first (every game counts
+  once), so it is not exactly 0.1519 − 0.2045.
 - The score-distribution model is as accurate as the logistic model for the win probability (difference not
   distinguishable from zero) and also gives overtime, final-score and period-outcome probabilities.
 - A model search (gradient boosting, splines, calibration wrappers, ensembles, rolling windows) found no candidate
@@ -43,8 +46,8 @@ src/
   experiments/              model search (forward validation, one-time test)
   simulation/               game simulator: synthetic games from team strengths (see its README)
   exploration/              one-off scripts used while exploring the data
-app/demo/                   scripts and data that build the demo page (see NOTES.md)
-docs/index.html             the demo page (served by GitHub Pages)
+app/demo/                   sources (src/), scripts and data that build the demo page (see NOTES.md)
+docs/index.html             the demo page, built by app/demo/build_page.py (served by GitHub Pages)
 data/                       data notes, MANIFEST.csv, games.csv, cleaning report (large files are not in git)
 models/                     model files
 results/                    reports and outputs of every step
@@ -97,14 +100,20 @@ python -I src/simulation/calibrate.py .
 python -I src/simulation/validate.py .
 
 # 9. Demo page (see app/demo/NOTES.md)
-python -I app/demo/build_day_data.py
-python -I app/demo/embed_day_data.py docs/index.html app/demo/day_data.json
+python -I app/demo/build_day_data.py     # games of the day -> app/demo/day_data.json (needs the 2026 data files)
+python -I app/demo/build_page.py         # app/demo/src + data and result files -> docs/index.html
 
 # Tests
 python tests/test_feed_checks.py
 python tests/test_models.py
 python tests/test_simulator.py
+python tests/test_live_replay.py
+python tests/test_feed_parity.py        # page (JavaScript) feed checks = feed_checks.py; needs Node
+python tests/test_model_parity.py       # page (JavaScript) models = winprob.py and v2/refmodel.py; needs Node
+python tests/test_demo_page.py          # numbers on the page = results/; page functions in Node
+python tests/test_docs_consistency.py   # numbers in the documentation = data and result files
 ```
+The tests also run on GitHub for every push (`.github/workflows/tests.yml`).
 
 Do not use `python -I` for `live_replay.py`: it imports the local `winprob.py`.
 

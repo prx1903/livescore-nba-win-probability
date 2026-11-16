@@ -40,8 +40,9 @@ for y in range(2013, 2027):
     e['game_id'] = e.game_id.astype('int64')
     e = e[e.game_id.isin(G.game_id)].sort_values(['game_id', 'game_play_number']).reset_index(drop=True)
     e = e[e.game_id != 400975164]
-    # 2013-2019 dosyalarında game_seconds_elapsed kaymış (1.-3. çeyrekte +360/+240/+120 sn).
-    # Zaman periyot ve maç saatinden yeniden hesaplanır; 2020+ dosyalarında eski sütunla birebir aynıdır.
+    # Time is recomputed here from the period and the game clock as a cross-check of game_seconds_elapsed.
+    # build_dataset.py already corrects the shifted clock of the 2013-2019 raw files, so both agree in every
+    # season (time_check.txt: share of rows that differ = 0).
     e['t'] = elapsed_from_clock(e)
     TCHK.append((y, len(e), float(np.mean(np.abs(e.t - e.game_seconds_elapsed) > 1.5))))
     # olay sırası zamanla tutarlı mı (geri giden zaman)

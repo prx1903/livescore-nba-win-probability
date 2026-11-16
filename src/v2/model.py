@@ -2,7 +2,7 @@
 Kullanım: python3 -I model.py <calisma_klasoru> <baseline_model_json>
 Seçimler eğitim (2014-2021) + doğrulama (2022) ile yapılır; son parametreler 2014-2022 ile yeniden kestirilir;
 test (2023-2026) en sonda bir kez değerlendirilir.
-Çıktılar: model_report.txt, sim_params.json, test_preds.parquet (örnek maçlar için)
+Çıktılar: model_report.txt, sim_params.json, metrics.json
 """
 import sys, os, json
 import numpy as np, pandas as pd
@@ -310,8 +310,8 @@ pb = baseline_p(T)
 lr_f = fit_logit((S.file_year >= 2013) & (S.file_year <= 2022))
 pc = lr_f.predict_proba(logit_feats(T))[:, 1]
 log('\n=== 4) TEST 2023-2026: KAZANMA OLASILIĞI (aynı anlık görüntüler) ===')
-log(f'Lojistik, teslim edilen (zamanı kaymış veriyle eğitilmiş): Brier={brier(pb, y):.4f} log loss={logloss(pb, y):.4f}  n={len(T)}')
-log(f'Lojistik, düzeltilmiş veriyle yeniden eğitildi:           Brier={brier(pc, y):.4f} log loss={logloss(pc, y):.4f}')
+log(f'Lojistik, teslim edilen (models/model_coefficients.json):  Brier={brier(pb, y):.4f} log loss={logloss(pb, y):.4f}  n={len(T)}')
+log(f'Lojistik, bu betikte yeniden eğitildi (kontrol):         Brier={brier(pc, y):.4f} log loss={logloss(pc, y):.4f}')
 log(f'  yeni katsayılar: sabit={lr_f.intercept_[0]:.4f} {np.round(lr_f.coef_[0], 4).tolist()}')
 log(f'Yeni model (skor dağılımı):                             Brier={brier(pw, y):.4f} log loss={logloss(pw, y):.4f}')
 MET['win'] = {'n': int(len(T)), 'brier_delivered': brier(pb, y), 'brier_fixed': brier(pc, y), 'brier_new': brier(pw, y),
@@ -320,9 +320,9 @@ md, lo, hi = boot_diff(T, pw, pb, y)
 MET['win']['diff_new_delivered'] = [md, lo, hi]
 log(f'Fark (yeni - teslim edilen lojistik), maç kümeli bootstrap: {md:+.4f} [%95: {lo:+.4f}, {hi:+.4f}]')
 md, lo, hi = boot_diff(T, pw, pc, y)
-log(f'Fark (yeni - düzeltilmiş lojistik): {md:+.4f} [%95: {lo:+.4f}, {hi:+.4f}]')
+log(f'Fark (yeni - yeniden eğitilen lojistik): {md:+.4f} [%95: {lo:+.4f}, {hi:+.4f}]')
 md, lo, hi = boot_diff(T, pc, pb, y)
-log(f'Fark (düzeltilmiş - teslim edilen lojistik): {md:+.4f} [%95: {lo:+.4f}, {hi:+.4f}]')
+log(f'Fark (yeniden eğitilen - teslim edilen lojistik): {md:+.4f} [%95: {lo:+.4f}, {hi:+.4f}]')
 tl = np.where(T.k >= 2880, -1, 2880 - T.k)
 bk = pd.cut(tl, [-2, 0, 300, 720, 1440, 2160, 2881], labels=['Uzatma', 'Son 5 dk', '5-12 dk', '12-24 dk', '24-36 dk', '36-48 dk'])
 MET['buckets'] = []
@@ -330,7 +330,7 @@ for b in ['36-48 dk', '24-36 dk', '12-24 dk', '5-12 dk', 'Son 5 dk', 'Uzatma']:
     mm = (bk == b)
     MET['buckets'].append({'label': b, 'n': int(mm.sum()), 'delivered': brier(pb[mm], y[mm]), 'new': brier(pw[mm], y[mm]),
                            'const': brier(np.full(mm.sum(), 0.5), y[mm])})
-    log(f'  {b:9s} n={mm.sum():6d} teslim edilen={brier(pb[mm], y[mm]):.4f} düzeltilmiş={brier(pc[mm], y[mm]):.4f} yeni={brier(pw[mm], y[mm]):.4f}')
+    log(f'  {b:9s} n={mm.sum():6d} teslim edilen={brier(pb[mm], y[mm]):.4f} yeniden eğitilen={brier(pc[mm], y[mm]):.4f} yeni={brier(pw[mm], y[mm]):.4f}')
 log('Kalibrasyon (yeni model, 10 bölme): ')
 cb = pd.cut(pw, np.linspace(0, 1, 11), include_lowest=True)
 cal = pd.DataFrame({'p': pw, 'y': y, 'b': cb}).groupby('b', observed=True).agg(n=('y', 'size'), tahmin=('p', 'mean'), gercek=('y', 'mean'))

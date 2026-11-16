@@ -7,6 +7,7 @@ def load_model(path):
 def features(margin, secs_left, is_ot, spread):
     """margin = ev sahibi - deplasman; secs_left = normal sürede kalan sn, uzatmada o uzatmada kalan sn;
     spread > 0: ev sahibi favori."""
+    secs_left = max(float(secs_left), 0.0)      # an event after the horn can carry a clock slightly below zero
     return {
         'm_over_sqrt_tl': margin / math.sqrt(secs_left + 1.0),
         'is_ot': 1.0 if is_ot else 0.0,
@@ -18,6 +19,9 @@ def features(margin, secs_left, is_ot, spread):
 def predict(model, margin, secs_left, is_ot, spread):
     """Ev sahibinin kazanma olasiligi. Model turu 'kind' alanindan okunur;
     alan yoksa eski katsayi modeli varsayilir (davranis degismedi)."""
+    if spread is None or (isinstance(spread, float) and math.isnan(spread)):
+        raise ValueError('spread is missing: use feed_checks.spread_or_default(spread)[0] '
+                         '(it returns 0, teams treated as even, and a warning text)')
     k = model.get('kind', 'logistic_coeffs') if isinstance(model, dict) else 'logistic_coeffs'
     if k == 'sklearn':
         return float(model['estimator'].predict_proba(_design(model, margin, secs_left, is_ot, spread))[0, 1])
@@ -61,7 +65,7 @@ def load(path):
 
 def _design(model, margin, secs_left, is_ot, spread):
     f = features(margin, secs_left, is_ot, spread)
-    f['m'] = float(margin); f['tl'] = float(secs_left)
+    f['m'] = float(margin); f['tl'] = max(float(secs_left), 0.0)
     f['spread'] = float(spread); f['is_ot'] = 1.0 if is_ot else 0.0
     return [[f[c] for c in model['input_features']]]
 

@@ -31,7 +31,7 @@ Changes made by this project: the cleaning rules below. Not in git (size): `raw/
    `start_game_seconds_remaining_raw`. In overtime the remaining time starts from that period's 300 s.
 4. `is_valid`: last row has 0 s left, last row is `End Game` or `End Period`, at least 4 periods, no tie, total
    score >= 120, `final_conflict` False (the clean final score equals the raw score of the last row), and no team
-   above 200 points. The 7 invalid games stay in `games.csv`.
+   above 200 points. The 54 invalid games stay in `games.csv`.
 5. `spread_home`: empty when the raw `game_spread_available` is False.
 
 ## `games.csv` columns
@@ -65,5 +65,6 @@ home_score, away_score` (clean), `home_score_raw, away_score_raw` (raw).
   2020-2021 (1,139, 1,172) are shortened seasons.
 - 2002-2012: the spread is a constant placeholder (`game_spread_available` False); it is meaningful from 2013.
 - Raw score drops: for example, 1,223 games of the 2013 file have at least one step back.
-- 7 invalid games: incomplete records (time left > 0 or the last row is not an end of game); one game has 3 periods.
+- 54 invalid games: 47 with a score conflict (`final_conflict`: the clean final score differs from the raw score of the
+  last row) and 7 incomplete records (time left > 0 or the last row is not an end of game; one game has 3 periods).
 - No player or ball tracking; who is on the court can only be rebuilt from `Substitution` events.
