@@ -1,5 +1,7 @@
 /* ---------- çizim ---------- */
-function drawMatch(){syncFeed();const g=G[sel],st=ST[sel];drawHero(g,st);drawCurve(g,st);drawRest(g,st);updateData();drawHome(g);drawWhatIf(g,st)}
+function drawMatch(){syncFeed();const g=G[sel],st=ST[sel];setTeamVars(document.documentElement,g);drawHero(g,st);drawCurve(g,st);drawRest(g,st);updateData();drawHome(g);drawDist(g,st);drawWhy(g,st);drawScale(g)}
+/* each row of the list carries the colours of its own two teams */
+function paintRows(){ROW.forEach((r,i)=>setTeamVars(r.b,G[i]))}
 function draw(){
   syncFeed(); rebuild(); layoutList();
   for(let i=0;i<G.length;i++)updateRow(i);
@@ -37,7 +39,7 @@ function view(v){
   window.scrollTo(0,0);
 }
 el('navM').onclick=()=>view('matches'); el('navD').onclick=()=>view('model');
-el('theme').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'};
+el('theme').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark';paintRows();draw()};
 el('filters').onclick=e=>{const b=e.target.closest('button');if(!b)return;filt=b.dataset.f;sig='';
   const vis=listOrder(ST,filt).flatMap(g=>g.ix);
   if(!vis.includes(sel)&&vis.length)sel=vis[0];
@@ -48,5 +50,5 @@ document.addEventListener('keydown',e=>{
     const vis=listOrder(ST,filt).flatMap(g=>g.ix);
     const at=vis.indexOf(sel); if(at>=0){sel=vis[(at+(e.code==='ArrowDown'?1:vis.length-1))%vis.length];markSel();drawMatch()}}
 });
-rebuild(); sel=ST.findIndex(s=>s.s==='live'); if(sel<0)sel=0;
+paintRows(); rebuild(); sel=ST.findIndex(s=>s.s==='live'); if(sel<0)sel=0;
 buildData(); drawCal(); drawTime(); drawAccText(); draw(); requestAnimationFrame(frame);

@@ -236,10 +236,9 @@ select{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)
   .rail,.rail-r{position:static;max-height:none}
   .pts{font-size:44px}
 }
-/* ---------- ne olurdu ---------- */
-.wi-ctl{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;padding-top:12px}
-.wi-ctl label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted)}
-.wi-ctl input[type=number]{width:86px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit}
-.wi-ctl input[type=range]{width:210px;accent-color:var(--accent)}
-.wi-ctl output{color:var(--ink);font-variant-numeric:tabular-nums}
-.wi-ctl .linkbtn{padding-bottom:8px}
+/* ---------- skor dağılımı ---------- */
+.dist{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding-top:14px}
+.dist>div{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:var(--r-s);padding:10px 4px 8px;text-align:center}
+.dist>div>i{position:absolute;left:0;right:0;bottom:0;opacity:.28}
+.dist .p{position:relative;font-family:var(--f-num);font-size:20px}
+.dist .l{position:relative;font-size:11.5px;color:var(--ink-2);margin-top:2px}

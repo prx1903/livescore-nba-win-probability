@@ -39,24 +39,31 @@ by `build_page.py`; edit the sources, not the page. It replays the NBA night of
   18 December 2025.
 - **Model:** Brier score, log loss, the Brier score of always saying 50% (exactly 0.25), errors by season type (including playoff), calibration curve for both teams (every
   test moment counted once for each team) and error by time
-  remaining (test seasons 2023-2026, numbers from `results/baseline_report.txt`). For each finished real game, its own
+  remaining (test seasons 2023-2026, numbers from `results/v2/metrics.json`; the line alone from `results/baseline_report.txt`). For each finished real game, its own
   error. The generated game is excluded from every accuracy number.
 
-- **What if? ("Ne olurdu?"):** the user sets the period, the time left and the score of the selected game. The win
-  probability of both teams comes from the model of the match screen (logistic; the page function `winProb` is the
-  formula of `src/winprob.py`), the overtime probability and the expected final score from the score-distribution
-  model (`ScoreModel`, the calculation of `src/v2/refmodel.py`); `tests/test_model_parity.py` compares both with the
-  Python code. Until a control is changed the panel follows the game. With no time left and a score that is not tied
-  the game is decided (100%). A table shows the same lead at different times left.
-- **Numbers of the Model view** are read from `results/baseline_report.txt` and `results/season_type_report.txt` when
+- **Model on the screen:** every probability of the match screen comes from the score-distribution model (`src/v2`),
+  so the win probability, the overtime probability, the expected score and the score ranges agree with each other.
+  `build_day_data.py` computes it for every event with `src/v2/refmodel.py`; the page has the same calculation in
+  JavaScript (`ScoreModel`) and `tests/test_model_parity.py` compares the two. The logistic model
+  (`models/model_coefficients.json`, the delivered model of the report) is shown in the Model view as the comparison.
+- **Probability text:** before the end of a game a value that rounds to 100 is written ">%99" (and "<%1");
+  only a finished game shows %100.
+- **Score ranges ("Skor dağılımı"):** probability that the margin at the end of regulation (or of the overtime being
+  played) falls in seven ranges, with the overtime probability and the expected final score.
+- **Why this probability ("Şu an neden"):** the pieces of the expected final margin (current margin, team strength,
+  home advantage, lead shrink) and its typical error.
+- **Strength scale and team colours:** the pre-game line on an axis; every game is drawn in the colours of its two
+  teams (colour table from the earlier prototype, no logos).
+- **Numbers of the Model view** are read from `results/v2/metrics.json`, `results/baseline_report.txt` and `results/season_type_report.txt` when
   the page is built; none is typed into the sources (`tests/test_demo_page.py` checks this).
 
 ## What is real and what is not
 - Real: the 12 games, teams, scores, period scores and event texts (from `data/processed`; final scores match
-  `games.csv`). Win probabilities are recomputed for every event with `models/model_coefficients.json`. Shot locations
+  `games.csv`). Win probabilities are computed for every event with the score-distribution model (`results/v2/sim_params.json`). Shot locations
   come from `data/raw/play_by_play_2026.parquet` (`coordinate_x_raw`, `coordinate_y_raw`), matched to the clean data
   by `game_play_number` (6,092 events, all 2,239 shots with a location).
-- Error on this day's 12 real games (Brier): model 0.191, pre-game probability alone 0.199
+- Error on this day's 12 real games (Brier): model 0.196, pre-game probability alone 0.197
   (snapshots every 60 s, the end of regulation excluded, as in the test; always measured on the complete events,
   also while a feed test is running). Twelve games are a small
   sample; on the 5,273 test games the values are 0.152 and 0.204.
@@ -77,8 +84,7 @@ python -I app/demo/build_day_data.py     # -> app/demo/day_data.json
 python -I app/demo/build_page.py         # -> docs/index.html
 ```
 Page sources: `src/page.html` (structure), `src/style.css`, `src/js/*.js` (joined in file-name order). `build_page.py`
-adds the generated constants: `DAY` (day_data.json), `ACC` (accuracy numbers from `results/`), `LOGIT`
-(`models/model_coefficients.json`) and `MODEL` (`results/v2/sim_params.json`). `embed_day_data.py` is the old command
+adds the generated constants: `DAY` (day_data.json), `ACC` (accuracy numbers from `results/`) and `MODEL` (`results/v2/sim_params.json`). `embed_day_data.py` is the old command
 and now only calls `build_page.py`.
 `build_day_data.py` needs the cleaned 2026 play-by-play and the raw 2026 file (not in git). Other locations can be
 given with the environment variables `LIVESCORE_REPO` and `LIVESCORE_RAW`.

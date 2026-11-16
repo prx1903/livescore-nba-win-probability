@@ -23,15 +23,21 @@ DATE = "2025-12-18"
 # (longer with overtime). Start times were assigned for the presentation: on a real NBA night games spread over about
 # 3.5 hours and a game lasts 2.5 hours (ratio 1.4). The 12 games were spread over 90 minutes with the same ratio.
 TIP_MIN = [0, 0, 10, 20, 30, 30, 40, 50, 60, 70, 80, 90]   # minutes after 02:00
-mdl = json.load(open(U + "/models/model_coefficients.json", encoding="utf-8"))
 
 
-sys.path.insert(0, os.path.join(U, 'src'))
-import winprob          # the one prediction function shared by training, replay and demo
+# The page shows the score-distribution model (src/v2): one model for the win probability, the overtime
+# probability, the expected score and the score ranges, so that the numbers on the screen agree with each other.
+sys.path.insert(0, os.path.join(U, 'src', 'v2'))
+from refmodel import Ref
+REF = Ref(json.load(open(U + "/results/v2/sim_params.json", encoding="utf-8")))
+PREGAME = pd.read_parquet(U + "/results/v2/pregame.parquet").set_index('game_id')
 
 
-def predict(m, tl, ot, sp):
-    return winprob.predict(mdl, m, tl, ot, sp)
+def predict(e, mu_m, mu_t):
+    """Home win probability after event e (None: before the game)."""
+    if e is None:
+        return REF.state(0.0, 1, 0, 0, mu_m, mu_t)['pw']
+    return REF.state(float(e.game_seconds_elapsed), int(e.period_number), int(e.home_score), int(e.away_score), mu_m, mu_t)['pw']
 
 
 g = pd.read_csv(U + "/data/processed/games.csv")
@@ -83,8 +89,8 @@ for i, r in d.iterrows():
         raise SystemExit(f'game {r.game_id} ({r.away_abbrev} @ {r.home_abbrev}) has no pre-game line; '
                          'the demo page needs a line for every game')
     sp = float(r.spread_home)
-    rows = [[int(e.game_seconds_elapsed), round(predict(e.home_score - e.away_score, e.start_game_seconds_remaining,
-             e.period_number > 4, sp), 3), int(e.home_score), int(e.away_score), int(e.period_number),
+    mu_m, mu_t = float(PREGAME.loc[r.game_id].mu_m), float(PREGAME.loc[r.game_id].mu_t)
+    rows = [[int(e.game_seconds_elapsed), round(predict(e, mu_m, mu_t), 3), int(e.home_score), int(e.away_score), int(e.period_number),
              str(e.clock_display_value), ti(str(e.type_text)), side(e.team_id, e.home_team_id),
              kind(str(e.type_text), bool(e.shooting_play))] for e in ev.itertuples()]
     # shots drawn on the court (free throws excluded): [event index, x, y, home, made, points]
@@ -96,7 +102,7 @@ for i, r in d.iterrows():
                           int(float(e.team_id) == float(e.home_team_id)), int(made), int(e.score_value) if made else 0])
     out.append({'id': int(r.game_id), 'home': r.home_abbrev, 'away': r.away_abbrev, 'sh': shots,
                 'tip': 7200 + TIP_MIN[i % len(TIP_MIN)] * 60, 'dur': rows[-1][0], 'sp': sp,
-                'pre': round(predict(0.0, 2880.0, False, sp), 3),
+                'pre': round(predict(None, mu_m, mu_t), 3),
                 'np': int(r.n_periods), 'ot': int(r.has_ot), 'ev': rows})
 # ---- generated game: src/simulation/game_simulator.py (generic event texts, no source text)
 sys.path.insert(0, U + "/src/simulation")
@@ -109,8 +115,7 @@ rng = random.Random(SIM_SEED)
 home, away = rng.sample(free, 2)
 info, sev = gs.simulate_game(inp, SIM_SEASON, home, away, seed=SIM_SEED)
 sp = float(info['spread_home'])
-rows = [[int(e.game_seconds_elapsed), round(predict(e.home_score - e.away_score, e.start_game_seconds_remaining,
-         e.period_number > 4, sp), 3), int(e.home_score), int(e.away_score), int(e.period_number),
+rows = [[int(e.game_seconds_elapsed), round(predict(e, info['mu_m'], info['mu_t']), 3), int(e.home_score), int(e.away_score), int(e.period_number),
          str(e.clock_display_value), ti(str(e.type_text)), side(e.team_id, 1),
          kind(str(e.type_text), bool(e.shooting_play))] for e in sev.itertuples()]
 sshots = [[k, float(e.shot_x), float(e.shot_y), int(e.team_id == 1), int(bool(e.scoring_play)),
@@ -118,7 +123,7 @@ sshots = [[k, float(e.shot_x), float(e.shot_y), int(e.team_id == 1), int(bool(e.
           for k, e in enumerate(sev.itertuples()) if pd.notna(e.shot_x)]
 # synNote is shown in the (Turkish) interface
 out.append({'id': int(info['game_id']), 'home': home, 'away': away, 'tip': 7200 + SIM_TIP_MIN * 60, 'dur': rows[-1][0],
-            'sp': round(sp, 1), 'pre': round(predict(0.0, 2880.0, False, sp), 3), 'np': int(info['n_periods']),
+            'sp': round(sp, 1), 'pre': round(predict(None, info['mu_m'], info['mu_t']), 3), 'np': int(info['n_periods']),
             'ot': int(info['has_ot']), 'syn': 1, 'seed': SIM_SEED, 'sh': sshots,
             'synNote': f"{SIM_SEASON - 1}-{str(SIM_SEASON)[2:]} takım güçlerinden üretildi (tohum {SIM_SEED})", 'ev': rows})
 print('generated game', away, '@', home, '| expected margin', round(info['mu_m'], 1), '| line', round(sp, 1),
@@ -127,7 +132,7 @@ print('generated game', away, '@', home, '| expected margin', round(info['mu_m']
 # ---- pre-game expectations: rating-model home edge H, expected regulation margin mu_m ('mu') and total mu_t ('mt')
 # of every game (home-advantage panel and score-distribution model),
 # and season averages of regular-season games played before DATE (no later games are used)
-pre = pd.read_parquet(U + "/results/v2/pregame.parquet").set_index('game_id')
+pre = PREGAME
 rat = json.load(open(U + "/results/v2/ratings_params.json", encoding="utf-8"))
 for o in out:
     if o.get('syn'):

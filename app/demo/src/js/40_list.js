@@ -24,7 +24,7 @@ function updateRow(i){
   r.sa.textContent=pre?'':st.a; r.sh.textContent=pre?'':st.h;
   r.ta.className='tm ta'+(st.a>st.h?' lead':'')+(pre?' dim':'');
   r.th.className='tm th'+(st.h>st.a?' lead':'')+(pre?' dim':'');
-  r.pp.textContent='%'+(ph>=50?ph:100-ph); r.pf.textContent=ph>=50?g.home:g.away;
+  r.pp.textContent=(ph>=50?pcs:pcsA)(st.p,st.s==='final'); r.pf.textContent=ph>=50?g.home:g.away;
   r.aa.style.width=(100-ph)+'%'; r.hh.style.width=ph+'%';
   const fs=feedState(i);
   r.warn.hidden=!(st.s==='live'&&(fs.s==='warn'||fs.s==='bad')); r.warn.textContent=fs.s==='bad'?'veri bayat':'veri uyarısı';

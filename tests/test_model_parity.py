@@ -1,5 +1,4 @@
-"""The two models in the demo page (JavaScript) must give the same numbers as the Python code:
-  winProb          = src/winprob.py            (logistic model, models/model_coefficients.json)
+"""The model in the demo page (JavaScript) must give the same numbers as the Python code:
   ScoreModel.state = src/v2/refmodel.py        (score-distribution model, results/v2/sim_params.json)
 Random game states, including the first and last second, period boundaries and overtime.
 Run: python tests/test_model_parity.py   (needs Node; skipped with a message if Node is not installed)"""
@@ -10,23 +9,6 @@ import _js
 
 ROOT = _js.ROOT
 TOL = 1e-9
-
-
-def test_logistic_model_matches_python():
-    if not _js.node():
-        return 'skip: Node is not installed'
-    import winprob
-    model = winprob.load(os.path.join(ROOT, 'models', 'model_coefficients.json'))
-    rng = random.Random(1)
-    states = [[m, tl, ot, sp] for m in (-40, -7, -1, 0, 1, 3, 25) for tl in (-0.4, 0, 0.5, 24, 300, 1440, 2880)
-              for ot in (False, True) for sp in (-17.5, 0, 6.5)]
-    states += [[rng.randint(-45, 45), rng.uniform(0, 2880), rng.random() < 0.1, rng.uniform(-20, 20)] for _ in range(3000)]
-    src = _js.page_source()
-    code = _js.js_const(src, 'LOGIT') + '\n' + _js.js_function(src, 'winProb') + '\nconsole.log(JSON.stringify(INPUT.map(s=>winProb(...s))));'
-    js = _js.run_node(code, states)
-    worst = max(abs(a - winprob.predict(model, *s)) for a, s in zip(js, states))
-    assert worst < TOL, worst
-    return f'{len(states)} states, largest difference {worst:.1e}'
 
 
 def random_state(rng):
@@ -67,7 +49,7 @@ def test_score_model_matches_python():
     src = _js.page_source()
     module = open(os.path.join(ROOT, 'app', 'demo', 'src', 'js', '25_models.js'), encoding='utf-8').read()
     assert module in src.replace('\r\n', '\n'), 'docs/index.html does not contain js/25_models.js as it is on disk'
-    code = _js.js_const(src, 'MODEL') + '\n' + module.split('/* ---------- lojistik model')[0] + '''
+    code = _js.js_const(src, 'MODEL') + '\n' + module + '''
     console.log(JSON.stringify(INPUT.map(s=>{
       const ms=s.starts?Object.fromEntries(Object.entries(s.starts).map(([j,v])=>[j,v[0]])):null;
       const ts=s.starts?Object.fromEntries(Object.entries(s.starts).map(([j,v])=>[j,v[1]])):null;

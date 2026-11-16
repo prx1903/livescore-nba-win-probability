@@ -78,13 +78,13 @@
     </div>
 
     <div class="panel sec">
-      <button><span class="t">Skor dağılımı</span><span class="d">hangi skor ne kadar olası</span></button>
-      <div class="body"><div class="stub" style="height:150px">v4'teki skor ızgarası ve kazanma/uzatma yüzdeleri buraya taşınacak.</div></div>
+      <button><span class="t">Skor dağılımı</span><span class="d">fark hangi aralıkta biter</span></button>
+      <div class="body"><div id="dist"></div></div>
     </div>
 
     <div class="panel sec">
       <button><span class="t">Şu an neden bu olasılık?</span><span class="d">olasılığın parçaları</span></button>
-      <div class="body"><div class="stub" style="height:130px">v4'teki parça grafiği (maç öncesi beklenti, ev sahibi avantajı, takım gücü, skor farkı, kalan süre) buraya taşınacak.</div></div>
+      <div class="body"><div id="why"></div></div>
     </div>
 
     <div class="panel sec">
@@ -96,35 +96,9 @@
         <p class="note" id="homeTxt"></p>
         <div class="chartbox" id="homeChart" style="margin-top:12px;--cw:640px"></div>
         <p class="note" id="homePO"></p>
-        <div class="stub" style="height:70px;margin-top:14px">Güç skalası görseli buraya taşınacak.</div>
-      </div>
-    </div>
-
-    <div class="panel sec">
-      <button><span class="t">Ne olurdu?</span><span class="d">senaryo denemesi</span></button>
-      <div class="body">
-        <p class="note" style="margin-top:14px">Periyodu, kalan süreyi ve skoru değiştir: bu maç o durumda olsaydı iki takımın kazanma olasılığı ne olurdu?</p>
-        <div class="wi-ctl">
-          <label>Periyot
-            <select id="wiPer">
-              <option value="1">1. periyot</option><option value="2">2. periyot</option><option value="3">3. periyot</option>
-              <option value="4">4. periyot</option><option value="5">1. uzatma</option><option value="6">2. uzatma</option>
-              <option value="7">3. uzatma</option>
-            </select></label>
-          <label>Periyotta kalan süre: <output id="wiRemOut" for="wiRem"></output>
-            <input type="range" id="wiRem" min="0" max="720" step="5"></label>
-          <label><span id="wiALab"></span><input type="number" id="wiA" min="0" max="250" step="1" inputmode="numeric"></label>
-          <label><span id="wiHLab"></span><input type="number" id="wiH" min="0" max="250" step="1" inputmode="numeric"></label>
-          <button type="button" class="linkbtn" id="wiReset">Maçın şu anki durumuna dön</button>
-        </div>
-        <div class="tug">
-          <div class="bar"><i class="aa" id="wiBarA"></i><i class="hh" id="wiBarH"></i></div>
-          <div class="lab"><span id="wiLabA"></span><span id="wiLabH"></span></div>
-        </div>
-        <dl class="kv" id="wiOut"></dl>
-        <h3 style="margin:18px 0 0;font-size:15px" id="wiTabH"></h3>
-        <table class="t" id="wiTab"></table>
-        <p class="note" id="wiNote"></p>
+        <h3 style="margin:18px 0 0;font-size:15px">Güç skalası</h3>
+        <div class="chartbox" id="scale" style="margin-top:8px;--cw:640px"></div>
+        <p class="note" id="scaleTxt"></p>
       </div>
     </div>
   </div>
@@ -162,7 +136,7 @@
 <!-- ============ MODEL ============ -->
 <div class="model hidden" id="viewModel">
   <h1>Model ne kadar güvenilir?</h1>
-  <p class="lead">Buradaki sayılar modelin hiç görmediği maçlardan geliyor: model 2013-2022 dosya yıllarıyla eğitildi,
+  <p class="lead">Buradaki sayılar modelin hiç görmediği maçlardan geliyor: modeller 2022'ye kadarki sezonlarla kuruldu,
      ölçümler 2023-2026 maçlarında yapıldı. Maç ekranında bu sayılar yer almaz; orada yalnızca veri akışında bir sorun
      olduğunda uyarı rozeti çıkar.</p>
   <div class="tiles">
@@ -171,6 +145,7 @@
     <div class="tile"><div class="v" id="tN"></div><div class="k">Test anı</div></div>
     <div class="tile"><div class="v">0,2500</div><div class="k">Hep %50 deseydik Brier</div></div>
   </div>
+  <p class="note" id="modelNote"></p>
 
   <section>
     <h2>Kalibrasyon</h2>
@@ -188,7 +163,7 @@
 
   <section>
     <h2>Maç türüne göre hata</h2>
-    <p>Model tüm maç türleriyle birlikte eğitildi; playoff ve play-in için ayrı ayar yok.</p>
+    <p>Bu tablo lojistik model içindir. Model tüm maç türleriyle birlikte eğitildi; playoff ve play-in için ayrı ayar yok.</p>
     <table class="t">
       <thead><tr><th>Tür</th><th>Maç</th><th>An</th><th>Brier</th><th>%95 aralık</th><th>Log kayıp</th></tr></thead>
       <tbody id="seasonRows"></tbody>

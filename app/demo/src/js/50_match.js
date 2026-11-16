@@ -1,6 +1,6 @@
 /* ---------- maç başlığı ---------- */
 function drawHero(g,st){
-  const live=st.s==='live', pre=st.s==='pre', ph=pct(st.p);
+  const live=st.s==='live', pre=st.s==='pre', fin=st.s==='final', ph=pct(st.p);
   const chip=pre?`<span class="chip">${hhmm(g.tip)}'da başlıyor</span>`
     :live?`<span class="chip live"><span class="dot" style="margin:0"></span>Canlı</span><span>${perName(st.pe)}, ${mmss(st.rem)}</span>`
     :`<span class="chip">Bitti</span><span>${st.pe>4?(st.pe-4)+' uzatma':'normal süre'}</span>`;
@@ -10,21 +10,21 @@ function drawHero(g,st){
     :'<span class="chip ok">akış normal</span>');
   const sA=pre?'':`<span class="pts">${st.a}</span>`, sH=pre?'':`<span class="pts">${st.h}</span>`;
   el('sc').innerHTML=`
-    <div class="team"><div class="badge" style="background:var(--away)">${g.away}</div>
+    <div class="team"><div class="badge" style="background:var(--away);color:var(--away-ink)">${g.away}</div>
       <div class="nm"><div class="ab">${NAME[g.away]||g.away}</div><div class="sub">deplasman</div></div>${sA}</div>
     <div class="dash">–</div>
-    <div class="team h"><div class="badge" style="background:var(--home)">${g.home}</div>
+    <div class="team h"><div class="badge" style="background:var(--home);color:var(--home-ink)">${g.home}</div>
       <div class="nm"><div class="ab">${NAME[g.home]||g.home}</div><div class="sub">ev sahibi</div></div>${sH}</div>`;
   el('barH').style.width=ph+'%'; el('barA').style.width=(100-ph)+'%';
-  el('labA').innerHTML=`<span class="num">%${100-ph}</span>${g.away}`;
-  el('labH').innerHTML=`${g.home}<span class="num" style="margin:0 0 0 6px">%${ph}</span>`;
+  el('labA').innerHTML=`<span class="num">${pcsA(st.p,fin)}</span>${g.away}`;
+  el('labH').innerHTML=`${g.home}<span class="num" style="margin:0 0 0 6px">${pcs(st.p,fin)}</span>`;
   const pre0=pct(g.pre);
   const nm=t=>NAME[t]||t, fav0=pre0>=50?[g.home,pre0]:[g.away,100-pre0];
   el('tugTxt').textContent=pre
     ? `Maç başlamadan önce kazanma olasılığı: ${nm(g.away)} %${100-pre0}, ${nm(g.home)} %${pre0}. Bu sayılar yalnızca takımların gücünden ve ev sahipliğinden geliyor.`
     : st.s==='final'
     ? `Maç bitti: ${nm(st.h>st.a?g.home:g.away)} kazandı (${st.a}–${st.h}). Maç öncesi kazanma olasılığı: ${nm(g.away)} %${100-pre0}, ${nm(g.home)} %${pre0}.`
-    : `Kazanma olasılığı: ${nm(g.away)} %${100-ph}, ${nm(g.home)} %${ph}. Maç başlamadan önce ${nm(fav0[0])} %${fav0[1]} ile favoriydi. Gösterilen değerler tahmindir, kesin sonuç değildir.`;
+    : `Kazanma olasılığı: ${nm(g.away)} ${pcsA(st.p,false)}, ${nm(g.home)} ${pcs(st.p,false)}. Maç başlamadan önce ${nm(fav0[0])} %${fav0[1]} ile favoriydi. Gösterilen değerler tahmindir, kesin sonuç değildir.`;
   if(g.syn)el('tugTxt').textContent+=` Bu maç gerçek değil: ${g.synNote}.`;
 }
 

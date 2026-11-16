@@ -8,4 +8,5 @@ scikit-learn>=1.9   # train_baseline.py, src/experiments and .joblib models
 scipy>=1.10         # src/v2/model.py and src/v2/refmodel.py (normal distribution); run with 1.15.3
 requests>=2.32      # only download_raw.py
 lightgbm>=4.6       # only src/experiments (model search); not needed for the baseline and the replay
+streamlit>=1.40     # only app/streamlit (shell that shows the demo page); tested with the version CI installs
 joblib>=1.4         # only .joblib model files and src/experiments (comes with scikit-learn)

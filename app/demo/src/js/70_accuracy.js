@@ -52,7 +52,7 @@ function drawCal(){
   el('calNote').textContent='Her nokta, modelin bir takıma benzer olasılık verdiği test anlarının bir grubu (10 grup). Her an iki kez sayılır: '
     +'bir kez ev sahibi, bir kez deplasman için. Nokta kesikli çizginin üstündeyse o takım tahminden sık kazanmış, altındaysa seyrek. '
     +`Örnek: modelin bir takıma ${pc(ex.p)} civarı verdiği ${fmt(ex.n)} durumda o takım ${pc(ex.o)} oranında kazandı. `
-    +'Kaynak: results/baseline_report.txt, test 2023-2026.';
+    +'Kaynak: results/v2/model_report.txt, test 2023-2026.';
 }
 function drawTime(){
   const W=620,H=300,L=48,R=118,T=14,B=40, n=ACC.time.length, gapOT=34;
@@ -120,12 +120,16 @@ function drawAccText(){
   const o=ACC.overall,t=ACC.time,S=ACC.season;
   el('tBrier').textContent=f4(o.m); el('tLogloss').textContent=f4(o.ll); el('tN').textContent=fmt(o.n);
   el('timeNote').textContent=`İlk çeyrekte model (${f3(t[0].m)}) maç öncesi çizgiye (${f3(t[0].s)}) yakın; skor ve süre biriktikçe hata düşüyor, `
-    +`son 5 dakikada ${f3(t[4].m)}. Uzatma ayrı gösterildi (${fmt(t[5].n)} an). Kaynak: results/baseline_report.txt, test 2023-2026.`;
+    +`son 5 dakikada ${f3(t[4].m)}. Uzatma ayrı gösterildi (${fmt(t[5].n)} an). Kaynak: results/v2/model_report.txt (model), results/baseline_report.txt (maç öncesi çizgi); test 2023-2026.`;
+  const [md,mlo,mhi]=o.diff;
+  el('modelNote').textContent=`Ekrandaki bütün olasılıklar skor dağılımı modelinden gelir; üstteki sayılar onun. Karşılaştırma için lojistik model: `
+    +`Brier ${f4(o.logit.m)}, log kayıp ${f4(o.logit.ll)}. İki modelin Brier farkı ${sg4(md)}, %95 aralık [${sg4(mlo)}, ${sg4(mhi)}]; `
+    +(mlo<0&&mhi>0?'aralık sıfırı içerdiği için iki model bu veriyle ayırt edilemiyor.':'aralık sıfırı içermiyor.');
   el('seasonRows').innerHTML=S.rows.map(r=>`<tr><td>${SEASON_LAB[r.key]}</td><td>${fmt(r.n)}</td><td>${fmt(r.snaps)}</td>`
     +`<td>${f4(r.brier)}</td><td>${f4(r.lo)} – ${f4(r.hi)}</td><td>${f4(r.ll)}</td></tr>`).join('');
   const [d,lo,hi]=S.diff, pin=S.rows.find(r=>r.key==='playin');
   el('seasonNote').textContent=`Playoff ile normal sezon arasındaki Brier farkı ${sg4(d)}, %95 aralık [${sg4(lo)}, ${sg4(hi)}]. `
     +(lo<0&&hi>0?'Aralık sıfırı içerdiği için fark bu veriyle ayırt edilemiyor. ':'Aralık sıfırı içermiyor. ')
     +`Play-in satırı ${fmt(pin.n)} maça dayanıyor, yalnızca bilgi amaçlı. `
-    +`Bu tabloda Brier önce her maçın içinde, sonra maçlar arasında ortalanır; üstteki ${f4(o.m)} bütün test anlarının ortalamasıdır.`;
+    +`Bu tabloda Brier önce her maçın içinde, sonra maçlar arasında ortalanır; lojistik modelin bütün test anlarındaki ortalaması ${f4(o.logit.m)}.`;
 }

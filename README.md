@@ -5,7 +5,8 @@ of the two teams (they add up to 1). It also gives the probability of overtime, 
 outcome of each period, and it can replay games event by event as if they were live. Internally the models compute
 the home team's probability p; the away team's is 1 − p.
 
-**Demo:** `docs/index.html` (open it in a browser, or see the GitHub Pages link of this repository).
+**Demo:** `docs/index.html` (open it in a browser, or see the GitHub Pages link of this repository), or inside
+Streamlit: `streamlit run app/streamlit/app.py`. The page shows the score-distribution model (see `app/demo/NOTES.md`).
 It replays one NBA night (12 real games of 18 December 2025 and one generated game) with the live probability,
 a half-court view of the last shots, and a model view with accuracy charts. The interface, most code comments and
 the text reports in `results/` are in Turkish.
@@ -109,7 +110,8 @@ python tests/test_models.py
 python tests/test_simulator.py
 python tests/test_live_replay.py
 python tests/test_feed_parity.py        # page (JavaScript) feed checks = feed_checks.py; needs Node
-python tests/test_model_parity.py       # page (JavaScript) models = winprob.py and v2/refmodel.py; needs Node
+python tests/test_model_parity.py       # page (JavaScript) model = v2/refmodel.py; needs Node
+python tests/test_streamlit_app.py      # the Streamlit shell starts; needs streamlit
 python tests/test_demo_page.py          # numbers on the page = results/; page functions in Node
 python tests/test_docs_consistency.py   # numbers in the documentation = data and result files
 ```

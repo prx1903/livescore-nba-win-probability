@@ -57,16 +57,3 @@ const ScoreModel=(()=>{
   }
   return {state,qOT,Phi};
 })();
-
-/* ---------- lojistik model ----------
-   Win probability of the home team: the same formula as src/winprob.py (tests/test_model_parity.py compares them).
-   LOGIT is written by build_page.py from models/model_coefficients.json.
-   margin = home - away; secsLeft = seconds left in regulation, in overtime seconds left in that overtime;
-   spread > 0: the home team is the favourite. */
-function winProb(margin,secsLeft,isOt,spread){
-  const tl=Math.max(secsLeft,0);
-  const f={m_over_sqrt_tl:margin/Math.sqrt(tl+1),is_ot:isOt?1:0,spread_x_tl:spread*(tl/2880),spread_x_sqrt_tl:spread*Math.sqrt(tl/2880),m:margin};
-  let z=LOGIT.intercept;
-  LOGIT.features.forEach((n,i)=>{z+=LOGIT.coef[i]*f[n]});
-  return 1/(1+Math.exp(-z));
-}

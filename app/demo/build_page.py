@@ -6,7 +6,7 @@ Sources (edit these, never docs/index.html itself):
   app/demo/src/js/*.js       page code, joined in file-name order
   app/demo/day_data.json     the games of the day (built by build_day_data.py)
   results/baseline_report.txt, results/season_type_report.txt   accuracy numbers shown in the Model view
-  models/model_coefficients.json, results/v2/sim_params.json    parameters of the two models used in the page
+  results/v2/metrics.json, results/v2/sim_params.json           accuracy and parameters of the model shown in the page
 
 Usage (from the repository root): python -I app/demo/build_page.py [output file]   -> docs/index.html
 tests/test_demo_page.py checks that docs/index.html is exactly what this script builds."""
@@ -49,30 +49,37 @@ def accuracy():
         rows.append(dict(key=key, n=int(n), snaps=int(snaps), brier=float(b), lo=float(lo), hi=float(hi), ll=float(l)))
     diff = [float(x) for x in find(r'Playoff - normal sezon Brier farkı: ([+-][\d.]+)\s+%95 aralık \[([+-][\d.]+), ([+-][\d.]+)\]',
                                    st, 'the playoff difference')]
-    return {'cal': cal, 'time': [by_time[b] for b in order],
-            'overall': {'m': float(br), 's': float(br_spread), 'll': float(ll), 'n': sum(c['n'] for c in cal),
-                        'games': sum(r['n'] for r in rows)},
+    # The page shows the score-distribution model: its numbers come from results/v2/metrics.json (same snapshots).
+    # The logistic model stays as the comparison ('logit') and in the season-type table.
+    met = json.loads(read(ROOT, 'results', 'v2', 'metrics.json'))
+    win, buckets = met['win'], met['buckets']
+    if ([b['label'] for b in buckets] != ['36-48 dk', '24-36 dk', '12-24 dk', '5-12 dk', 'Son 5 dk', 'Uzatma']
+            or [b['n'] for b in buckets] != [by_time[b]['n'] for b in order] or win['n'] != sum(c['n'] for c in cal)):
+        raise SystemExit('build_page: results/v2/metrics.json and baseline_report.txt do not describe the same snapshots')
+    return {'cal': [dict(n=c['n'], p=round(c['pred'], 3), o=round(c['obs'], 3)) for c in met['calib']],
+            'time': [dict(n=b['n'], m=round(b['new'], 4), s=by_time[o]['s']) for b, o in zip(buckets, order)],
+            'overall': {'m': round(win['brier_new'], 4), 's': float(br_spread), 'll': round(win['ll_new'], 4), 'n': win['n'],
+                        'games': sum(r['n'] for r in rows), 'logit': {'m': float(br), 'll': float(ll)},
+                        'diff': [round(x, 4) for x in win['diff_new_delivered']]},
             'season': {'rows': rows, 'diff': diff}}
 
 
 def models():
-    """Parameters of the logistic model (LOGIT) and of the score-distribution model (MODEL) for the page code."""
-    wp = json.loads(read(ROOT, 'models', 'model_coefficients.json'))
+    """Parameters of the score-distribution model (MODEL) for the page code."""
     sim = json.loads(read(ROOT, 'results', 'v2', 'sim_params.json'))
     if sim['kt'] is not None or sim['km'] is not None or set(sim['beta']) != {'ms'}:
         raise SystemExit('build_page: sim_params.json has terms that the page code (js/25_models.js) does not implement')
     model = {k: sim[k] for k in ('share', 'Vm', 'Vt', 'Cmt', 'h', 'H_EDGES', 'v_per', 'OT')}
     model['b'] = sim['beta']['ms']
-    return {k: wp[k] for k in ('features', 'intercept', 'coef')}, model
+    return model
 
 
 def data_block():
     """The generated JavaScript constants (one line each)."""
     day = json.load(open(os.path.join(ROOT, 'app', 'demo', 'day_data.json'), encoding='utf-8'))
     dumps = lambda x: json.dumps(x, ensure_ascii=False, separators=(',', ':'))
-    wp, model = models()
-    return ('const DAY=' + dumps(day) + ';\nconst ACC=' + dumps(accuracy()) + ';\nconst LOGIT=' + dumps(wp)
-            + ';\nconst MODEL=' + dumps(model) + ';\n')
+    model = models()
+    return 'const DAY=' + dumps(day) + ';\nconst ACC=' + dumps(accuracy()) + ';\nconst MODEL=' + dumps(model) + ';\n'
 
 
 def build():

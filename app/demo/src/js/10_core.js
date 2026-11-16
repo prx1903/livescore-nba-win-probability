@@ -32,6 +32,13 @@ const evtr=i=>{const t=TYPES[i];if(EVTR[t])return EVTR[t];
 const el=id=>document.getElementById(id);
 const fmt=n=>n.toLocaleString('tr-TR');
 const pct=p=>Math.round(p*100);
+/* Probability as text. Before the end of a game nothing is certain: a value that rounds to 100 is written ">%99"
+   and one that rounds to 0 "<%1"; only a finished game (fin) shows %100 and %0. */
+const pcr=(r,fin)=>fin?'%'+r:r>=100?'>%99':r<=0?'<%1':'%'+r;
+const pcs=(p,fin)=>pcr(pct(p),fin);
+/* the other team's share of a home probability p: 100 minus the rounded home value, so that the two add up to 100 */
+const pcsA=(p,fin)=>pcr(100-pct(p),fin);
+const pc1=x=>x>0&&x<0.0005?'<%0,1':'%'+(x*100).toFixed(1).replace('.',',');
 const hhmm=s=>String(Math.floor(s/3600)%24).padStart(2,'0')+':'+String(Math.floor(s/60)%60).padStart(2,'0');
 /* oyun saati: 1 dakikanin altinda onda birlik gosterilir */
 const mmss=r=>r>=60?Math.floor(r/60)+':'+String(Math.floor(r%60)).padStart(2,'0'):Math.max(0,r).toFixed(1);
